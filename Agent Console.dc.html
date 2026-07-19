@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="theme-color" content="#0F0D0A">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style> body { margin:0; } </style>
+</helmet>
+
+<div style="min-height:100vh; background:#0F0D0A; color:#F3EFE7; font-family:'Inter',sans-serif;">
+
+  <div style="max-width:960px; margin:0 auto; padding:56px 32px 24px;">
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:#C9A24B; margin-bottom:16px;">Internal · Not customer-facing</div>
+    <h1 style="font-family:'Fraunces',serif; font-weight:700; font-size:clamp(28px,4vw,40px); margin:0 0 10px;">Agent Console</h1>
+    <p style="font-size:15.5px; line-height:1.6; color:#BFB8A9; max-width:60ch; margin:0 0 32px;">Two agents that do the busywork so the business runs lean: an Operations agent that pre-reviews drafts for The Human Check, and a Marketing agent that drafts on-demand copy for any of the four projects.</p>
+
+    <div style="display:flex; gap:10px; margin-bottom:32px; border-bottom:1px solid #2A2822;">
+      <div onClick="{{ setTabOps }}" style="padding:12px 4px; cursor:pointer; font-size:14px; font-weight:600; color: {{ opsTabColor }}; border-bottom: {{ opsTabBorder }}; margin-right:24px;">Operations Agent</div>
+      <div onClick="{{ setTabMkt }}" style="padding:12px 4px; cursor:pointer; font-size:14px; font-weight:600; color: {{ mktTabColor }}; border-bottom: {{ mktTabBorder }};">Marketing Agent</div>
+    </div>
+  </div>
+
+  <sc-if value="{{ isOps }}">
+    <div style="max-width:960px; margin:0 auto; padding:0 32px 80px; display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+      <div>
+        <div style="font-size:12.5px; font-weight:600; color:#8A8477; text-transform:uppercase; letter-spacing:.08em; margin-bottom:10px;">Paste the AI-generated draft</div>
+        <textarea
+          value="{{ opsInput }}"
+          onChange="{{ onOpsInputChange }}"
+          placeholder="Paste a report, email, or any AI-drafted text to pre-audit before your final human pass…"
+          style="width:100%; height:320px; background:#1B1915; border:1px solid #3A3629; border-radius:12px; padding:16px; color:#F3EFE7; font-size:14px; font-family:'Inter',sans-serif; resize:vertical; box-sizing:border-box; outline:none;"
+        ></textarea>
+        <div onClick="{{ runOps }}" style="margin-top:14px; background:#C9A24B; color:#0E0F13; border-radius:10px; padding:12px 20px; font-size:13.5px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">{{ opsButtonLabel }}</div>
+      </div>
+      <div>
+        <div style="font-size:12.5px; font-weight:600; color:#8A8477; text-transform:uppercase; letter-spacing:.08em; margin-bottom:10px;">Flags for human review</div>
+        <div style="background:#1B1915; border:1px solid #3A3629; border-radius:12px; padding:16px; height:320px; overflow-y:auto; font-size:14px; line-height:1.6; white-space:pre-wrap; color: {{ opsOutputColor }};">{{ opsOutput }}</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isMkt }}">
+    <div style="max-width:960px; margin:0 auto; padding:0 32px 80px;">
+      <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;">
+        <sc-for list="{{ projects }}" as="p" hint-placeholder-count="4">
+          <div onClick="{{ p.onSelect }}" style="padding:10px 16px; border-radius:100px; cursor:pointer; font-size:13px; font-weight:600; background: {{ p.bg }}; color: {{ p.color }}; border:1px solid {{ p.border }};">{{ p.label }}</div>
+        </sc-for>
+      </div>
+
+      <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;">
+        <sc-for list="{{ platforms }}" as="pl" hint-placeholder-count="3">
+          <div onClick="{{ pl.onSelect }}" style="padding:8px 14px; border-radius:8px; cursor:pointer; font-size:12.5px; font-weight:600; background: {{ pl.bg }}; color: {{ pl.color }}; border:1px solid {{ pl.border }};">{{ pl.label }}</div>
+        </sc-for>
+      </div>
+
+      <div onClick="{{ runMkt }}" style="margin-bottom:24px; background:#C9A24B; color:#0E0F13; border-radius:10px; padding:12px 20px; font-size:13.5px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">{{ mktButtonLabel }}</div>
+
+      <div style="background:#1B1915; border:1px solid #3A3629; border-radius:12px; padding:20px; min-height:220px; font-size:14.5px; line-height:1.7; white-space:pre-wrap; color: {{ mktOutputColor }};">{{ mktOutput }}</div>
+    </div>
+  </sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const OPS_SYSTEM = `You are the Operations Agent for "The Human Check," an AI-output auditing service. A human editor will make the final call, but your job is a fast first-pass triage on a pasted draft. Look specifically for: numbers/stats that seem inconsistent or unverifiable, confident claims that sound hallucinated or unsupported, missing citations, internal contradictions, and sloppy or ambiguous phrasing that could mislead a reader. Output a short bulleted list of concrete flags (quote the exact phrase, then say what's wrong) — no more than 8 flags, most important first. If the draft looks clean, say so briefly. Never rewrite the draft yourself; only flag.`;
+
+const MKT_SYSTEM = `You are the Marketing Agent for "All Things Angela," a portfolio of four independent products. Write a short, on-brand piece of marketing copy for the requested project and platform. Keep it tight, concrete, no clichés or hashtag spam, no emoji unless the platform is casual social. Match tone to the project: StoryMind is warm/playful, EquityIQ is sharp/analytical, The Human Check is precise/trustworthy, The Wealth Council is bold/high-stakes. Output ONLY the copy, ready to post — no preamble, no explanation.`;
+
+const PROJECTS = [
+  { id: "storymind", label: "StoryMind", bgOn: "#1A93B8", colorOn: "#fff" },
+  { id: "equityiq", label: "EquityIQ", bgOn: "#C6A566", colorOn: "#14171A" },
+  { id: "humancheck", label: "The Human Check", bgOn: "#B23A2E", colorOn: "#fff" },
+  { id: "wealthcouncil", label: "The Wealth Council", bgOn: "#C9A24B", colorOn: "#0E0F13" },
+];
+
+const PLATFORMS = ["LinkedIn post", "Twitter/X post", "Short email blurb"];
+
+// Uses this design tool's built-in Claude helper while you're working here.
+// After you deploy the Cloudflare Worker proxy (see launch/README.md), paste
+// its URL below and the console will use that automatically once live.
+const CLAUDE_PROXY_URL = ""; // e.g. "https://claude-proxy.yoursubdomain.workers.dev"
+
+async function callClaude(opts) {
+  if (window.claude && window.claude.complete) {
+    return await window.claude.complete(opts);
+  }
+  if (!CLAUDE_PROXY_URL) {
+    throw new Error("Claude proxy not configured yet — set CLAUDE_PROXY_URL after deploying your Worker.");
+  }
+  const res = await fetch(CLAUDE_PROXY_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(opts),
+  });
+  if (!res.ok) throw new Error(`Proxy request failed (${res.status})`);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return data.text;
+}
+
+class Component extends DCLogic {
+  state = {
+    tab: "ops",
+    opsInput: "",
+    opsOutput: "Paste a draft and run the agent to see flags here.",
+    opsLoading: false,
+    mktProject: "storymind",
+    mktPlatform: "LinkedIn post",
+    mktOutput: "Pick a project and platform, then generate copy.",
+    mktLoading: false,
+  };
+
+  setTabOps = () => this.setState({ tab: "ops" });
+  setTabMkt = () => this.setState({ tab: "mkt" });
+  onOpsInputChange = (e) => this.setState({ opsInput: e.target.value });
+  selectProject = (id) => this.setState({ mktProject: id });
+  selectPlatform = (label) => this.setState({ mktPlatform: label });
+
+  runOps = async () => {
+    const text = this.state.opsInput.trim();
+    if (!text || this.state.opsLoading) return;
+    this.setState({ opsLoading: true, opsOutput: "Reviewing…" });
+    try {
+      const reply = await callClaude({
+        model: "claude-haiku-4-5",
+        max_tokens: 700,
+        system: OPS_SYSTEM,
+        messages: [{ role: "user", content: text }],
+      });
+      this.setState({ opsOutput: (reply || "").trim() || "No flags returned.", opsLoading: false });
+    } catch (err) {
+      this.setState({ opsOutput: "Something went wrong running the agent. Try again.", opsLoading: false });
+    }
+  };
+
+  runMkt = async () => {
+    if (this.state.mktLoading) return;
+    const project = PROJECTS.find(p => p.id === this.state.mktProject);
+    this.setState({ mktLoading: true, mktOutput: "Writing…" });
+    try {
+      const reply = await callClaude({
+        model: "claude-haiku-4-5",
+        max_tokens: 500,
+        system: MKT_SYSTEM,
+        messages: [{ role: "user", content: `Write a ${this.state.mktPlatform} for the project "${project.label}".` }],
+      });
+      this.setState({ mktOutput: (reply || "").trim() || "No copy returned.", mktLoading: false });
+    } catch (err) {
+      this.setState({ mktOutput: "Something went wrong running the agent. Try again.", mktLoading: false });
+    }
+  };
+
+  renderVals() {
+    const isOps = this.state.tab === "ops";
+    const isMkt = this.state.tab === "mkt";
+
+    const projects = PROJECTS.map(p => {
+      const active = this.state.mktProject === p.id;
+      return {
+        label: p.label,
+        bg: active ? p.bgOn : "#1B1915",
+        color: active ? p.colorOn : "#BFB8A9",
+        border: active ? p.bgOn : "#3A3629",
+        onSelect: () => this.selectProject(p.id),
+      };
+    });
+
+    const platforms = PLATFORMS.map(label => {
+      const active = this.state.mktPlatform === label;
+      return {
+        label,
+        bg: active ? "#C9A24B" : "#1B1915",
+        color: active ? "#0E0F13" : "#BFB8A9",
+        border: active ? "#C9A24B" : "#3A3629",
+        onSelect: () => this.selectPlatform(label),
+      };
+    });
+
+    return {
+      isOps,
+      isMkt,
+      opsTabColor: isOps ? "#F3EFE7" : "#8A8477",
+      opsTabBorder: isOps ? "2px solid #C9A24B" : "2px solid transparent",
+      mktTabColor: isMkt ? "#F3EFE7" : "#8A8477",
+      mktTabBorder: isMkt ? "2px solid #C9A24B" : "2px solid transparent",
+      setTabOps: this.setTabOps,
+      setTabMkt: this.setTabMkt,
+      opsInput: this.state.opsInput,
+      onOpsInputChange: this.onOpsInputChange,
+      opsOutput: this.state.opsOutput,
+      opsOutputColor: this.state.opsLoading ? "#8A8477" : "#F3EFE7",
+      opsButtonLabel: this.state.opsLoading ? "Reviewing…" : "Run pre-audit",
+      runOps: this.runOps,
+      projects,
+      platforms,
+      mktOutput: this.state.mktOutput,
+      mktOutputColor: this.state.mktLoading ? "#8A8477" : "#F3EFE7",
+      mktButtonLabel: this.state.mktLoading ? "Writing…" : "Generate copy",
+      runMkt: this.runMkt,
+    };
+  }
+}
+</script>
+</body>
+</html>

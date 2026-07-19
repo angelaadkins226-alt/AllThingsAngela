@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="theme-color" content="#0F0D0A">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes drift { 0%,100% { transform:translate(0,0) rotate(0deg); } 50% { transform:translate(3%,-3%) rotate(3deg); } }
+    @keyframes shimmer { 0% { background-position:0% 50%; } 100% { background-position:200% 50%; } }
+    @keyframes swimRight { 0% { transform:translateX(-60px) translateY(0) scaleX(1); } 48% { transform:translateX(420px) translateY(-16px) scaleX(1); } 50% { transform:translateX(424px) translateY(-16px) scaleX(-1); } 98% { transform:translateX(-56px) translateY(8px) scaleX(-1); } 100% { transform:translateX(-60px) translateY(0) scaleX(1); } }
+    @keyframes swimLeft { 0% { transform:translateX(60px) translateY(0) scaleX(-1); } 48% { transform:translateX(-420px) translateY(12px) scaleX(-1); } 50% { transform:translateX(-424px) translateY(12px) scaleX(1); } 98% { transform:translateX(56px) translateY(-8px) scaleX(1); } 100% { transform:translateX(60px) translateY(0) scaleX(-1); } }
+    @keyframes bubbleUp { 0% { transform:translateY(0); opacity:.9; } 100% { transform:translateY(-140px); opacity:0; } }
+    body { margin:0; }
+  </style>
+</helmet>
+
+<div style="min-height:100vh; background:#0F0D0A; color:#F3EFE7; font-family:'Inter',sans-serif; display:flex; flex-direction:column; overflow-x:hidden;">
+
+  <div style="max-width:1200px; margin:0 auto; padding:130px 32px 90px; width:100%; box-sizing:border-box; position:relative;">
+    <div style="position:absolute; top:60px; right:0; width:420px; height:420px; background:radial-gradient(circle, rgba(201,162,75,.16), transparent 70%); filter:blur(10px); animation:drift 14s ease-in-out infinite; pointer-events:none;"></div>
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:#C9A24B; margin-bottom:24px; animation:fadeUp .6s ease both;">Portfolio · Five Projects, One Builder</div>
+    <h1 style="font-family:'Fraunces',serif; font-weight:600; font-size:clamp(48px,7.5vw,96px); line-height:0.98; margin:0 0 28px; letter-spacing:-0.02em; animation:fadeUp .6s ease .05s both;">All Things<br><span style="background:linear-gradient(90deg,#F4E4C1,#C9A24B,#9FE0F0,#C9A24B,#F4E4C1); background-size:200% auto; -webkit-background-clip:text; background-clip:text; color:transparent; animation:shimmer 6s linear infinite;">Angela</span></h1>
+    <p style="font-size:19px; line-height:1.65; color:#BFB8A9; max-width:58ch; margin:0; animation:fadeUp .6s ease .1s both;">A children's story engine, a homebuyer's edge, an AI honesty check, a council of ten legendary operators, and a service to build portfolios like this one — five fully working projects built end to end. Dive into any one below.</p>
+  </div>
+
+  <div style="max-width:1200px; margin:0 auto; padding:0 32px 60px; width:100%; box-sizing:border-box; display:flex; flex-direction:column; gap:44px;">
+
+    <div>
+      <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:20px; animation:fadeUp .6s ease .12s both;">
+        <h2 style="font-family:'Fraunces',serif; font-weight:600; font-size:22px; margin:0; color:#F3EFE7;">Words &amp; Content</h2>
+        <div style="flex:1; height:1px; background:#2A2822;"></div>
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:#8A8477;">Create it, then verify it</span>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:20px;">
+        <a href="pages/storymind.html" style="animation:fadeUp .6s ease .15s both; text-decoration:none; color:inherit; display:grid; grid-template-columns:1.2fr 1fr; gap:0; border-radius:22px; overflow:hidden; background:linear-gradient(135deg,#0A3A6B,#127AA8 55%,#1A93B8); border:1px solid #2C4A5E; position:relative; min-height:300px; transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease, border-color .3s ease;" style-hover="transform:translateY(-6px) scale(1.008); box-shadow:0 30px 60px -20px rgba(10,58,107,0.6); border-color:#67C8F5;">
+          <div style="padding:44px 40px; display:flex; flex-direction:column; justify-content:center; position:relative; z-index:1;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#9FE0F0; margin-bottom:16px;">01 · Children's Stories</div>
+            <div style="font-family:'Fraunces',serif; font-weight:700; font-size:clamp(30px,3.4vw,44px); color:#fff; margin-bottom:14px; line-height:1.05;">StoryMind</div>
+            <div style="font-size:15.5px; line-height:1.65; color:#DCEFFA; max-width:38ch; margin-bottom:26px;">An underwater story-builder for kids — pick characters, set a scene, and watch a tale swim to life among fish and coral.</div>
+            <div style="font-size:13.5px; font-weight:700; color:#0A3A6B; background:#FFD166; display:inline-flex; align-items:center; gap:8px; padding:12px 20px; border-radius:100px; width:fit-content;">Open StoryMind →</div>
+          </div>
+          <div style="position:relative; overflow:hidden;">
+            <div style="position:absolute; inset:0; background:radial-gradient(circle at 30% 30%, rgba(170,240,255,.22), transparent 55%), radial-gradient(circle at 70% 65%, rgba(255,209,102,.18), transparent 50%);"></div>
+            <div style="position:absolute; font-size:70px; top:16%; left:0; filter:drop-shadow(0 8px 16px rgba(0,0,0,.3)); animation:swimRight 9s linear infinite;">🐠</div>
+            <div style="position:absolute; font-size:44px; top:60%; left:0; filter:drop-shadow(0 8px 16px rgba(0,0,0,.3)); animation:swimLeft 12s linear infinite 1.5s;">🐟</div>
+            <div style="position:absolute; font-size:32px; top:38%; left:0; filter:drop-shadow(0 8px 16px rgba(0,0,0,.3)); animation:swimRight 14s linear infinite 4s;">🐡</div>
+            <div style="position:absolute; font-size:38px; top:78%; left:0; filter:drop-shadow(0 8px 16px rgba(0,0,0,.3)); animation:swimLeft 10s linear infinite .6s;">🐠</div>
+            <div style="position:absolute; font-size:26px; top:8%; left:0; filter:drop-shadow(0 8px 16px rgba(0,0,0,.3)); animation:swimLeft 16s linear infinite 3s;">🐟</div>
+            <div style="position:absolute; font-size:20px; bottom:10%; left:30%; opacity:.85; animation:bubbleUp 4s ease-in infinite;">🫧</div>
+            <div style="position:absolute; font-size:14px; bottom:10%; left:62%; opacity:.7; animation:bubbleUp 5s ease-in infinite 1.2s;">🫧</div>
+          </div>
+        </a>
+
+        <a href="pages/human-check.html" style="animation:fadeUp .6s ease .2s both; text-decoration:none; color:inherit; display:grid; grid-template-columns:1.2fr 1fr; gap:0; border-radius:22px; overflow:hidden; background:#F4F2EC; border:1px solid #D8D4C8; position:relative; min-height:300px; transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease, border-color .3s ease;" style-hover="transform:translateY(-6px) scale(1.008); box-shadow:0 30px 60px -20px rgba(27,42,61,0.3); border-color:#B23A2E;">
+          <div style="padding:44px 40px; display:flex; flex-direction:column; justify-content:center; position:relative; z-index:1;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#B23A2E; margin-bottom:16px;">02 · AI Human Reviewers</div>
+            <div style="font-family:'Newsreader',serif; font-weight:700; font-size:clamp(30px,3.4vw,44px); color:#1B2A3D; margin-bottom:14px; line-height:1.05;">The Human Check</div>
+            <div style="font-size:15.5px; line-height:1.65; color:#4B5A6B; max-width:38ch; margin-bottom:26px;">AI output auditing, done by a real editor — catching what a model gets confidently, invisibly wrong before it reaches your desk.</div>
+            <div style="font-size:13.5px; font-weight:700; color:#F4F2EC; background:#B23A2E; display:inline-flex; align-items:center; gap:8px; padding:12px 20px; border-radius:100px; width:fit-content;">Open The Human Check →</div>
+          </div>
+          <div style="position:relative; overflow:hidden;">
+            <div style="position:absolute; inset:0; background-image:repeating-linear-gradient(0deg, rgba(90,90,80,.05) 0px, rgba(90,90,80,.05) 1px, transparent 1px, transparent 30px);"></div>
+            <div style="position:absolute; top:26%; left:24%; width:150px; padding:14px 16px; background:#FFFEFB; border:1px solid #D8D4C8; box-shadow:0 16px 30px -14px rgba(27,42,61,.3); transform:rotate(-2deg); font-family:'IBM Plex Mono',monospace; font-size:10px; color:#2b2b26; animation:drift 10s ease-in-out infinite;">DRAFT — <del style="color:#B23A2E;">up 40%</del> <ins style="color:#1F6F63; text-decoration:none;">up 75%</ins></div>
+            <div style="position:absolute; top:58%; left:52%; border:2px solid #1F6F63; color:#1F6F63; font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:11px; padding:5px 10px; border-radius:4px; transform:rotate(8deg); animation:drift 8s ease-in-out infinite .4s;">VERIFIED</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div>
+      <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:20px; animation:fadeUp .6s ease .25s both;">
+        <h2 style="font-family:'Fraunces',serif; font-weight:600; font-size:22px; margin:0; color:#F3EFE7;">Wealth &amp; Money</h2>
+        <div style="flex:1; height:1px; background:#2A2822;"></div>
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:#8A8477;">Tactical, then strategic</span>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:20px;">
+        <a href="pages/home-buying.html" style="animation:fadeUp .6s ease .3s both; text-decoration:none; color:inherit; display:grid; grid-template-columns:1.2fr 1fr; gap:0; border-radius:22px; overflow:hidden; background:#14171A; border:1px solid rgba(198,165,102,.22); position:relative; min-height:300px; transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease, border-color .3s ease;" style-hover="transform:translateY(-6px) scale(1.008); box-shadow:0 30px 60px -20px rgba(198,165,102,0.35); border-color:#C6A566;">
+          <div style="padding:44px 40px; display:flex; flex-direction:column; justify-content:center; position:relative; z-index:1;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#C6A566; margin-bottom:16px;">03 · Strategic First-Time Home Buying</div>
+            <div style="font-family:'Fraunces',serif; font-weight:700; font-size:clamp(30px,3.4vw,44px); color:#EDE8DC; margin-bottom:14px; line-height:1.05;">EquityIQ</div>
+            <div style="font-size:15.5px; line-height:1.65; color:#B9B3A4; max-width:38ch; margin-bottom:26px;">A townhome search dashboard that tracks price drops, fee changes, and deal signals across every listing you're watching.</div>
+            <div style="font-size:13.5px; font-weight:700; color:#14171A; background:#D8C39A; display:inline-flex; align-items:center; gap:8px; padding:12px 20px; border-radius:100px; width:fit-content;">Open EquityIQ →</div>
+          </div>
+          <div style="position:relative; overflow:hidden; background:radial-gradient(1200px 500px at 50% -10%, rgba(198,165,102,.1), transparent);">
+            <div style="position:absolute; inset:0; background-image:repeating-linear-gradient(120deg, transparent, transparent 38px, rgba(198,165,102,.08) 38px, rgba(198,165,102,.08) 40px);"></div>
+            <div style="position:absolute; top:32%; left:28%; width:120px; height:90px; border:1px solid rgba(198,165,102,.5); border-radius:4px; background:rgba(198,165,102,.06); animation:drift 9s ease-in-out infinite;"></div>
+            <div style="position:absolute; top:52%; left:56%; width:90px; height:70px; border:1px solid rgba(198,165,102,.4); border-radius:4px; background:rgba(198,165,102,.05); animation:drift 11s ease-in-out infinite .7s;"></div>
+          </div>
+        </a>
+
+        <a href="pages/wealth-council.html" style="animation:fadeUp .6s ease .35s both; text-decoration:none; color:inherit; display:grid; grid-template-columns:1.2fr 1fr; gap:0; border-radius:22px; overflow:hidden; background:#0E0F13; border:1px solid #262932; position:relative; min-height:300px; transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease, border-color .3s ease;" style-hover="transform:translateY(-6px) scale(1.008); box-shadow:0 30px 60px -20px rgba(201,162,75,0.35); border-color:#C9A24B;">
+          <div style="padding:44px 40px; display:flex; flex-direction:column; justify-content:center; position:relative; z-index:1;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#C9A24B; margin-bottom:16px;">04 · Wealth Optimization from Top Entrepreneurs</div>
+            <div style="font-family:'Fraunces',serif; font-weight:700; font-size:clamp(30px,3.4vw,44px); color:#F4E4C1; margin-bottom:14px; line-height:1.05;">The Wealth Council</div>
+            <div style="font-size:15.5px; line-height:1.65; color:#9198A8; max-width:38ch; margin-bottom:26px;">Put a decision to ten legendary operators — Bezos, Musk, Arnault and more — and get their combined verdict.</div>
+            <div style="font-size:13.5px; font-weight:700; color:#0E0F13; background:linear-gradient(135deg,#C9A24B,#F4E4C1); display:inline-flex; align-items:center; gap:8px; padding:12px 20px; border-radius:100px; width:fit-content;">Convene the Council →</div>
+          </div>
+          <div style="position:relative; overflow:hidden;">
+            <div style="position:absolute; inset:0; background:radial-gradient(circle at 40% 40%, rgba(201,162,75,.12), transparent 60%);"></div>
+            <div style="position:absolute; top:30%; left:30%; width:40px; height:40px; border-radius:8px; background:linear-gradient(135deg,#C9A24B,#F4E4C1); transform:rotate(45deg); animation:drift 9s ease-in-out infinite;"></div>
+            <div style="position:absolute; top:55%; left:52%; width:26px; height:26px; border-radius:6px; border:1px solid #C9A24B; transform:rotate(20deg); animation:drift 11s ease-in-out infinite .6s;"></div>
+            <div style="position:absolute; top:38%; left:60%; width:18px; height:18px; border-radius:4px; background:rgba(201,162,75,.4); animation:drift 7s ease-in-out infinite .3s;"></div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div>
+      <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:20px; animation:fadeUp .6s ease .38s both;">
+        <h2 style="font-family:'Fraunces',serif; font-weight:600; font-size:22px; margin:0; color:#F3EFE7;">Build Your Own</h2>
+        <div style="flex:1; height:1px; background:#2A2822;"></div>
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:#8A8477;">A service, not a topic</span>
+      </div>
+
+      <a href="pages/Portfolio Builder.dc.html" style="animation:fadeUp .6s ease .42s both; text-decoration:none; color:inherit; display:grid; grid-template-columns:1.2fr 1fr; gap:0; border-radius:22px; overflow:hidden; background:#1F1C17; border:1px solid #3A362C; position:relative; min-height:300px; transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease, border-color .3s ease;" style-hover="transform:translateY(-6px) scale(1.008); box-shadow:0 30px 60px -20px rgba(201,162,75,0.35); border-color:#C9A24B;">
+        <div style="padding:44px 40px; display:flex; flex-direction:column; justify-content:center; position:relative; z-index:1;">
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#C9A24B; margin-bottom:16px;">05 · Portfolio Assembly</div>
+          <div style="font-family:'Fraunces',serif; font-weight:700; font-size:clamp(30px,3.4vw,44px); color:#F3EFE7; margin-bottom:14px; line-height:1.05;">Portfolio Builder</div>
+          <div style="font-size:15.5px; line-height:1.65; color:#BFB8A9; max-width:38ch; margin-bottom:26px;">Got scattered HTML files, prototypes, and screenshots but no single place to show them? I'll assemble them into one portfolio, keeping each piece's own design intact.</div>
+          <div style="font-size:13.5px; font-weight:700; color:#171512; background:linear-gradient(135deg,#C9A24B,#F4E4C1); display:inline-flex; align-items:center; gap:8px; padding:12px 20px; border-radius:100px; width:fit-content;">See how it works →</div>
+        </div>
+        <div style="position:relative; overflow:hidden;">
+          <div style="position:absolute; inset:0; background-image:linear-gradient(rgba(201,162,75,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(201,162,75,.08) 1px, transparent 1px); background-size:36px 36px;"></div>
+          <div style="position:absolute; top:28%; left:24%; width:70px; height:52px; border:1px solid rgba(201,162,75,.5); border-radius:6px; background:rgba(201,162,75,.06); animation:drift 9s ease-in-out infinite;"></div>
+          <div style="position:absolute; top:50%; left:48%; width:56px; height:42px; border:1px solid rgba(201,162,75,.4); border-radius:6px; background:rgba(201,162,75,.05); animation:drift 11s ease-in-out infinite .5s;"></div>
+          <div style="position:absolute; top:38%; left:66%; width:46px; height:36px; border:1px solid rgba(201,162,75,.35); border-radius:6px; background:rgba(201,162,75,.04); animation:drift 8s ease-in-out infinite .8s;"></div>
+        </div>
+      </a>
+    </div>
+
+  </div>
+
+  <div style="max-width:1200px; margin:0 auto; padding:32px 32px 56px; width:100%; box-sizing:border-box; border-top:1px solid #2A2822; padding-top:28px; font-size:13px; color:#8A8477;">
+    All Things Angela — a personal portfolio.
+  </div>
+
+  <sc-if value="{{ chatOpen }}">
+    <div style="position:fixed; bottom:96px; right:24px; width:360px; max-width:calc(100vw - 48px); height:500px; max-height:calc(100vh - 160px); background:#1B1915; border:1px solid #3A3629; border-radius:18px; box-shadow:0 30px 60px -20px rgba(0,0,0,0.6); display:flex; flex-direction:column; overflow:hidden; z-index:1000; font-family:'Inter',sans-serif;">
+      <div style="padding:18px 20px; border-bottom:1px solid #2A2822; display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
+        <div>
+          <div style="font-family:'Fraunces',serif; font-weight:600; font-size:16px; color:#F3EFE7;">Support</div>
+          <div style="font-size:12px; color:#8A8477;">Ask about any of the five projects</div>
+        </div>
+        <div style="cursor:pointer; color:#8A8477; font-size:20px; line-height:1; padding:4px;" onClick="{{ closeChat }}">×</div>
+      </div>
+
+      <div style="flex:1; overflow-y:auto; padding:16px 20px; display:flex; flex-direction:column; gap:14px;" ref="{{ scrollRef }}">
+        <sc-for list="{{ chatMessages }}" as="msg" hint-placeholder-count="1">
+          <div style="max-width:85%; align-self: {{ msg.alignSelf }}; background: {{ msg.bg }}; color: {{ msg.color }}; padding:10px 14px; border-radius:14px; font-size:14px; line-height:1.5; white-space:pre-wrap;">{{ msg.content }}</div>
+        </sc-for>
+        <sc-if value="{{ chatLoading }}">
+          <div style="align-self:flex-start; color:#8A8477; font-size:13px; font-style:italic;">Thinking…</div>
+        </sc-if>
+      </div>
+
+      <div style="padding:14px 16px; border-top:1px solid #2A2822; display:flex; gap:8px; flex-shrink:0;">
+        <input
+          type="text"
+          value="{{ chatInput }}"
+          onChange="{{ onChatInputChange }}"
+          onKeyDown="{{ onChatKeyDown }}"
+          placeholder="Type a question…"
+          style="flex:1; background:#242019; border:1px solid #3A3629; border-radius:10px; padding:10px 12px; color:#F3EFE7; font-size:14px; font-family:'Inter',sans-serif; outline:none;"
+        />
+        <div onClick="{{ sendChat }}" style="background:#C9A24B; color:#0E0F13; border-radius:10px; padding:10px 16px; font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center;">Send</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <div onClick="{{ toggleChat }}" style="position:fixed; bottom:24px; right:24px; width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,#C9A24B,#F4E4C1); box-shadow:0 12px 30px -10px rgba(201,162,75,0.6); display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:1000; font-size:26px; transition:transform .2s ease;" style-hover="transform:scale(1.08);">
+    {{ chatIcon }}
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const SYSTEM_PROMPT = `You are the friendly support assistant for "All Things Angela," a portfolio site presenting five independent products/services built by Angela. Answer visitor questions about these projects, help them decide which is relevant to them, and point them to the right page. Be warm, concise (2-4 sentences unless more detail is asked for), and never invent features not listed below.
+
+THE FIVE PROJECTS:
+
+1. StoryMind (pages/storymind.html) — Children's Stories. An underwater-themed AI story-builder for kids: pick characters, set a scene, and it generates a story that "swims to life" with an animated aquarium backdrop. For parents/kids wanting personalized bedtime stories.
+
+2. EquityIQ (pages/home-buying.html) — Strategic First-Time Home Buying. A townhome search dashboard for buyers: tracks listings, price drops, fee changes, and deal signals, with detailed comps and math breakdowns per property. For someone actively house-hunting who wants an analytical edge.
+
+3. The Human Check (pages/human-check.html) — AI Human Reviewers. A human-in-the-loop editing/auditing service that reviews AI-generated content for factual errors, hallucinations, and sloppy numbers before it goes out the door. For businesses or individuals publishing AI-assisted work who want a safety net.
+
+4. The Wealth Council (pages/wealth-council.html) — Wealth Optimization from Top Entrepreneurs. A chat/verdict tool that simulates a council of ten legendary business operators (Musk, Bezos, Arnault, etc.) reasoning through a business or financial decision and giving a combined verdict. For founders/investors wrestling with a strategic decision.
+
+5. Portfolio Builder (pages/Portfolio Builder.dc.html) — a done-for-you service that assembles someone else's scattered HTML files, prototypes, and screenshots into one cohesive portfolio site, keeping each piece's original design intact. For anyone with real work sitting in disconnected files who wants one link to send.
+
+If asked something unrelated to these five projects, gently redirect to what the portfolio offers. If asked to open/visit a project, tell them which link to click.`;
+
+// Uses this design tool's built-in Claude helper while you're working here.
+// After you deploy the Cloudflare Worker proxy (see launch/README.md), paste
+// its URL below and the site will use that automatically once live.
+const CLAUDE_PROXY_URL = ""; // e.g. "https://claude-proxy.yoursubdomain.workers.dev"
+
+async function callClaude(opts) {
+  if (window.claude && window.claude.complete) {
+    return await window.claude.complete(opts);
+  }
+  if (!CLAUDE_PROXY_URL) {
+    throw new Error("Claude proxy not configured yet — set CLAUDE_PROXY_URL after deploying your Worker.");
+  }
+  const res = await fetch(CLAUDE_PROXY_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(opts),
+  });
+  if (!res.ok) throw new Error(`Proxy request failed (${res.status})`);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return data.text;
+}
+
+class Component extends DCLogic {
+  state = {
+    chatOpen: false,
+    chatInput: "",
+    chatLoading: false,
+    chatMessages: [
+      { role: "assistant", content: "Hi! I can help you figure out which project fits what you need — StoryMind, EquityIQ, The Human Check, The Wealth Council, or Portfolio Builder. What are you looking for?" },
+    ],
+  };
+
+  scrollRef = React.createRef();
+
+  toggleChat = () => this.setState(s => ({ chatOpen: !s.chatOpen }));
+  closeChat = () => this.setState({ chatOpen: false });
+  onChatInputChange = (e) => this.setState({ chatInput: e.target.value });
+
+  onChatKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      this.sendChat();
+    }
+  };
+
+  scrollToBottom = () => {
+    requestAnimationFrame(() => {
+      const el = this.scrollRef.current;
+      if (el) el.scrollTop = el.scrollHeight;
+    });
+  };
+
+  sendChat = async () => {
+    const text = this.state.chatInput.trim();
+    if (!text || this.state.chatLoading) return;
+
+    const nextMessages = [...this.state.chatMessages, { role: "user", content: text }];
+    this.setState({ chatMessages: nextMessages, chatInput: "", chatLoading: true }, this.scrollToBottom);
+
+    try {
+      const reply = await callClaude({
+        model: "claude-haiku-4-5",
+        max_tokens: 500,
+        system: SYSTEM_PROMPT,
+        messages: nextMessages.map(m => ({ role: m.role, content: m.content })),
+      });
+      this.setState(
+        s => ({ chatMessages: [...s.chatMessages, { role: "assistant", content: (reply || "").trim() || "Sorry, I didn't catch that — could you rephrase?" }], chatLoading: false }),
+        this.scrollToBottom
+      );
+    } catch (err) {
+      this.setState(
+        s => ({ chatMessages: [...s.chatMessages, { role: "assistant", content: "Sorry, something went wrong. Try again in a moment." }], chatLoading: false }),
+        this.scrollToBottom
+      );
+    }
+  };
+
+  renderVals() {
+    const chatMessages = this.state.chatMessages.map(m => ({
+      content: m.content,
+      alignSelf: m.role === "user" ? "flex-end" : "flex-start",
+      bg: m.role === "user" ? "#C9A24B" : "#242019",
+      color: m.role === "user" ? "#0E0F13" : "#F3EFE7",
+    }));
+
+    return {
+      chatOpen: this.state.chatOpen,
+      chatInput: this.state.chatInput,
+      chatLoading: this.state.chatLoading,
+      chatMessages,
+      chatIcon: this.state.chatOpen ? "×" : "💬",
+      scrollRef: this.scrollRef,
+      toggleChat: this.toggleChat,
+      closeChat: this.closeChat,
+      onChatInputChange: this.onChatInputChange,
+      onChatKeyDown: this.onChatKeyDown,
+      sendChat: this.sendChat,
+    };
+  }
+}
+</script>
+</body>
+</html>
