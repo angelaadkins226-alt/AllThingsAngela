@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="theme-color" content="#171512">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes drift { 0%,100% { transform:translate(0,0) rotate(0deg); } 50% { transform:translate(3%,-4%) rotate(3deg); } }
+    body { margin:0; }
+    a { color:#C9A24B; }
+    a:hover { color:#F4E4C1; }
+  </style>
+</helmet>
+
+<div style="min-height:100vh; background:#171512; color:#F3EFE7; font-family:'Inter',sans-serif; overflow-x:hidden;">
+
+  <div style="max-width:1040px; margin:0 auto; padding:130px 32px 80px; position:relative;">
+    <div style="position:absolute; top:0; left:0; right:0; height:640px; background-image:linear-gradient(rgba(201,162,75,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(201,162,75,.06) 1px, transparent 1px); background-size:46px 46px; mask-image:radial-gradient(ellipse 65% 55% at 50% 0%, black, transparent); pointer-events:none;"></div>
+    <div style="position:absolute; top:40px; right:-60px; width:380px; height:380px; background:radial-gradient(circle, rgba(201,162,75,.18), transparent 70%); filter:blur(20px); animation:drift 15s ease-in-out infinite; pointer-events:none;"></div>
+
+    <div style="position:relative;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:#C9A24B; margin-bottom:24px; animation:fadeUp .6s ease both; display:flex; align-items:center; gap:10px;">
+        <span style="width:6px; height:6px; border-radius:50%; background:#C9A24B; display:inline-block;"></span>
+        A Fifth Project · Portfolio Assembly
+      </div>
+      <h1 style="font-family:'Fraunces',serif; font-weight:800; font-size:clamp(42px,6.5vw,72px); line-height:1.02; margin:0 0 26px; letter-spacing:-0.02em; animation:fadeUp .6s ease .05s both;">You already built<br>the pieces.</h1>
+      <p style="font-size:19px; line-height:1.7; color:#BFB8A9; max-width:56ch; margin:0 0 40px; animation:fadeUp .6s ease .1s both;">Scattered HTML files, half-finished prototypes, a folder of screenshots and Figma links — if you've got the pieces of a portfolio but not the time to stitch them into something you'd actually send someone, that's what this is for.</p>
+
+      <div style="display:flex; align-items:center; gap:18px; flex-wrap:wrap; animation:fadeUp .6s ease .15s both;">
+        <div style="display:flex; gap:8px;">
+          <div style="width:46px; height:34px; border-radius:6px; background:#1F1C17; border:1px solid #3A362C; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:9px; color:#8A8477; transform:rotate(-6deg);">.html</div>
+          <div style="width:46px; height:34px; border-radius:6px; background:#1F1C17; border:1px solid #3A362C; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:9px; color:#8A8477; transform:rotate(3deg);">.png</div>
+          <div style="width:46px; height:34px; border-radius:6px; background:#1F1C17; border:1px solid #3A362C; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:9px; color:#8A8477; transform:rotate(-2deg);">.pdf</div>
+        </div>
+        <span style="color:#C9A24B; font-size:20px;">→</span>
+        <div style="width:64px; height:40px; border-radius:8px; background:linear-gradient(135deg,#C9A24B,#F4E4C1); display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:700; color:#171512;">1 site</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:1040px; margin:0 auto; padding:0 32px 90px;">
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#C9A24B; margin-bottom:22px;">How it works</div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px; position:relative;">
+      <div style="position:absolute; top:38px; left:16%; right:16%; height:1px; background:linear-gradient(90deg, transparent, #3A362C, #3A362C, transparent); z-index:0;"></div>
+      <div style="background:#1F1C17; border:1px solid #3A362C; border-radius:16px; padding:28px; position:relative; z-index:1; transition:transform .25s ease, border-color .25s ease;" style-hover="transform:translateY(-4px); border-color:#C9A24B;">
+        <div style="width:38px; height:38px; border-radius:10px; background:rgba(201,162,75,.1); border:1px solid rgba(201,162,75,.3); display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:14px; color:#C9A24B; margin-bottom:18px;">01</div>
+        <div style="font-family:'Fraunces',serif; font-weight:700; font-size:20px; margin-bottom:10px;">Send what you have</div>
+        <div style="font-size:14.5px; line-height:1.65; color:#BFB8A9;">HTML files, PDFs, screenshots, half-built prototypes, old Figma exports — whatever exists, however messy.</div>
+      </div>
+      <div style="background:#1F1C17; border:1px solid #3A362C; border-radius:16px; padding:28px; position:relative; z-index:1; transition:transform .25s ease, border-color .25s ease;" style-hover="transform:translateY(-4px); border-color:#C9A24B;">
+        <div style="width:38px; height:38px; border-radius:10px; background:rgba(201,162,75,.1); border:1px solid rgba(201,162,75,.3); display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:14px; color:#C9A24B; margin-bottom:18px;">02</div>
+        <div style="font-family:'Fraunces',serif; font-weight:700; font-size:20px; margin-bottom:10px;">It gets assembled</div>
+        <div style="font-size:14.5px; line-height:1.65; color:#BFB8A9;">AI-assisted, human-reviewed — each piece keeps its own design intact. Nothing gets rebuilt from scratch, and a single hub page ties it all together.</div>
+      </div>
+      <div style="background:#1F1C17; border:1px solid #3A362C; border-radius:16px; padding:28px; position:relative; z-index:1; transition:transform .25s ease, border-color .25s ease;" style-hover="transform:translateY(-4px); border-color:#C9A24B;">
+        <div style="width:38px; height:38px; border-radius:10px; background:rgba(201,162,75,.1); border:1px solid rgba(201,162,75,.3); display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:14px; color:#C9A24B; margin-bottom:18px;">03</div>
+        <div style="font-family:'Fraunces',serif; font-weight:700; font-size:20px; margin-bottom:10px;">You get a link to send</div>
+        <div style="font-size:14.5px; line-height:1.65; color:#BFB8A9;">One shareable portfolio, ready for a job application, a client pitch, or just having somewhere to point people.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:1040px; margin:0 auto; padding:0 32px 90px;">
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#C9A24B; margin-bottom:22px;">Who this is for</div>
+    <div style="background:linear-gradient(135deg,#1F1C17,#221E18); border:1px solid #3A362C; border-radius:18px; padding:36px;">
+      <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:18px;">
+        <li style="font-size:16px; line-height:1.6; color:#E4DFD3; padding-left:26px; position:relative;"><span style="position:absolute; left:0; top:2px; color:#C9A24B; font-weight:700;">→</span> Builders and designers with real work sitting in disconnected files, no time to wire it together</li>
+        <li style="font-size:16px; line-height:1.6; color:#E4DFD3; padding-left:26px; position:relative;"><span style="position:absolute; left:0; top:2px; color:#C9A24B; font-weight:700;">→</span> Job seekers who prototyped ideas but never turned them into something presentable</li>
+        <li style="font-size:16px; line-height:1.6; color:#E4DFD3; padding-left:26px; position:relative;"><span style="position:absolute; left:0; top:2px; color:#C9A24B; font-weight:700;">→</span> Anyone who likes each individual piece of their work but has no single place to show it all</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="max-width:1040px; margin:0 auto; padding:0 32px 100px;">
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#C9A24B; margin-bottom:22px;">Get in touch</div>
+    <div style="background:#1F1C17; border:1px solid #3A362C; border-radius:20px; padding:40px; box-shadow:0 30px 60px -30px rgba(201,162,75,.18);">
+      <div style="font-family:'Fraunces',serif; font-weight:700; font-size:24px; margin-bottom:10px;">Tell me what you've got</div>
+      <p style="font-size:15px; line-height:1.65; color:#BFB8A9; margin:0 0 28px;">A quick note about your files and what you're trying to build. I'll reply with next steps.</p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+        <div>
+          <label style="display:block; font-size:11px; font-family:'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase; color:#8A8477; margin-bottom:8px;">Your name</label>
+          <input type="text" id="pb-name" style="width:100%; box-sizing:border-box; background:#171512; border:1px solid #3A362C; color:#F3EFE7; border-radius:8px; padding:12px 14px; font-family:'Inter',sans-serif; font-size:14.5px; outline:none;">
+        </div>
+        <div>
+          <label style="display:block; font-size:11px; font-family:'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase; color:#8A8477; margin-bottom:8px;">Your email</label>
+          <input type="email" id="pb-email" style="width:100%; box-sizing:border-box; background:#171512; border:1px solid #3A362C; color:#F3EFE7; border-radius:8px; padding:12px 14px; font-family:'Inter',sans-serif; font-size:14.5px; outline:none;">
+        </div>
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="display:block; font-size:11px; font-family:'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase; color:#8A8477; margin-bottom:8px;">What have you got, and what do you want it to become?</label>
+        <textarea id="pb-message" placeholder="e.g. 6 HTML prototypes and a resume PDF — want one portfolio site for job applications" style="width:100%; box-sizing:border-box; min-height:120px; background:#171512; border:1px solid #3A362C; color:#F3EFE7; border-radius:8px; padding:12px 14px; font-family:'Inter',sans-serif; font-size:14.5px; resize:vertical; outline:none;"></textarea>
+      </div>
+
+      <div id="pb-err" style="display:none; color:#C2695A; font-size:13px; margin-bottom:14px;"></div>
+      <button onclick="{{ submitInquiry }}" style="background:linear-gradient(135deg,#C9A24B,#F4E4C1); color:#171512; border:none; font-weight:700; font-size:14.5px; padding:14px 26px; border-radius:10px; cursor:pointer; transition:transform .15s ease;" style-hover="transform:translateY(-2px);">Send inquiry →</button>
+      <p style="font-size:12.5px; color:#8A8477; margin:16px 0 0; line-height:1.65;">This opens your email app, pre-filled and ready to send — nothing is transmitted automatically. Attach your files to that email before sending.</p>
+    </div>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const PB_EMAIL = 'allthingsangela@zohomail.com';
+
+class Component extends DCLogic {
+  submitInquiry = () => {
+    const errEl = document.getElementById('pb-err');
+    const name = document.getElementById('pb-name').value.trim();
+    const email = document.getElementById('pb-email').value.trim();
+    const message = document.getElementById('pb-message').value.trim();
+
+    errEl.style.display = 'none';
+    if (!name) { errEl.textContent = 'Please add your name.'; errEl.style.display = 'block'; return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Please enter a valid email.'; errEl.style.display = 'block'; return; }
+    if (!message) { errEl.textContent = 'Please add a short message.'; errEl.style.display = 'block'; return; }
+
+    const subject = encodeURIComponent(`Portfolio Builder inquiry from ${name}`);
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}\n\n(Remember to attach your files before sending!)`);
+    window.location.href = `mailto:${PB_EMAIL}?subject=${subject}&body=${body}`;
+  };
+
+  renderVals() {
+    return { submitInquiry: this.submitInquiry };
+  }
+}
+</script>
+</body>
+</html>

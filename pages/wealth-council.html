@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wealth Council — Entrepreneur Playbooks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #0E0F13; min-height: 100vh; font-family: 'Inter', sans-serif; }
+  #root { min-height: 100vh; }
+  a { color: #C9A24B; }
+</style>
+</head>
+<body>
+
+<div id="gate" style="max-width:760px; margin:0 auto; padding:100px 32px 80px; color:#E8E9ED;">
+  <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:#C9A24B; margin-bottom:20px;">Wealth Optimization from Top Entrepreneurs</div>
+  <h1 style="font-family:'Fraunces',serif; font-weight:700; font-size:clamp(32px,5vw,48px); line-height:1.05; margin:0 0 20px;">The Wealth Council</h1>
+  <p style="font-size:16.5px; line-height:1.65; color:#9198A8; max-width:60ch; margin:0 0 32px;">Put a decision to ten legendary operators — Bezos, Musk, Arnault, and more — and get their combined verdict. Here's a taste of how it thinks:</p>
+
+  <div style="background:#15171D; border:1px solid #262932; border-radius:12px; padding:24px 26px; margin-bottom:24px;">
+    <div style="font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#7E8494; margin-bottom:12px;">Try it free — ask the Council one question</div>
+    <div style="display:flex; gap:10px; margin-bottom:14px;">
+      <input type="text" id="trial-input" placeholder="e.g. Should I take on a co-founder or stay solo?" style="flex:1; background:#0E0F13; border:1px solid #262932; color:#E8E9ED; border-radius:8px; padding:12px 14px; font-family:'Inter',sans-serif; font-size:14.5px; outline:none;">
+      <button id="trial-btn" style="background:linear-gradient(135deg,#C9A24B,#F4E4C1); color:#0E0F13; border:none; font-weight:700; font-size:14px; padding:12px 20px; border-radius:8px; cursor:pointer; white-space:nowrap;">Ask once, free</button>
+    </div>
+    <div id="trial-status" style="font-size:13px; color:#7E8494; margin-bottom:6px;"></div>
+    <div id="trial-result" style="display:none; font-size:15px; line-height:1.7; color:#EAECF1; background:#0E0F13; border:1px solid #262932; border-radius:10px; padding:18px 20px;"></div>
+  </div>
+
+  <div style="background:#15171D; border:1px solid #262932; border-radius:12px; padding:22px 26px; margin-bottom:24px;">
+    <div style="font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#7E8494; margin-bottom:14px;">Your info — needed for either option below</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+      <div>
+        <label style="display:block; font-size:11px; font-family:'IBM Plex Mono',monospace; letter-spacing:0.05em; text-transform:uppercase; color:#7E8494; margin-bottom:8px;">Your name</label>
+        <input type="text" id="gate-name" style="width:100%; box-sizing:border-box; background:#0E0F13; border:1px solid #262932; color:#E8E9ED; border-radius:8px; padding:11px 13px; font-family:'Inter',sans-serif; font-size:14.5px; outline:none;">
+      </div>
+      <div>
+        <label style="display:block; font-size:11px; font-family:'IBM Plex Mono',monospace; letter-spacing:0.05em; text-transform:uppercase; color:#7E8494; margin-bottom:8px;">Your email</label>
+        <input type="email" id="gate-email" style="width:100%; box-sizing:border-box; background:#0E0F13; border:1px solid #262932; color:#E8E9ED; border-radius:8px; padding:11px 13px; font-family:'Inter',sans-serif; font-size:14.5px; outline:none;">
+      </div>
+    </div>
+  </div>
+
+  <div style="background:#15171D; border:1px solid #262932; border-radius:12px; padding:24px 26px; margin-bottom:20px;">
+    <div style="font-family:'Fraunces',serif; font-weight:700; font-size:17px; color:#F4E4C1; margin-bottom:6px;">Just need a couple answers?</div>
+    <p style="font-size:13.5px; line-height:1.6; color:#9198A8; margin:0 0 16px;">3 more questions, asked right here — no commitment to the full platform.</p>
+    <div id="pack-err" style="display:none; color:#C2695A; font-size:13px; margin-bottom:12px;"></div>
+    <button id="pack-request-btn" style="background:transparent; color:#C9A24B; border:1.5px solid #C9A24B; font-weight:700; font-size:14px; padding:11px 20px; border-radius:8px; cursor:pointer;">Request 3 questions — $2 →</button>
+    <div id="pack-venmo-panel" style="display:none; margin-top:16px; background:#0E0F13; border:1px solid #262932; border-radius:10px; padding:16px 18px; font-size:13.5px; line-height:1.6; color:#EAECF1;">
+      <strong style="color:#F4E4C1;">Almost there!</strong> Send <strong>$2</strong> to Venmo <strong>@AllThingsAngela1995</strong> (note: "Council 3-question pack"). I'll email your unlock code to <span id="pack-email-echo" style="color:#F4E4C1;"></span> within 24 hours.
+    </div>
+  </div>
+
+  <div style="background:#15171D; border:1px solid #262932; border-radius:12px; padding:28px 30px;">
+    <div style="font-family:'Fraunces',serif; font-weight:700; font-size:20px; color:#F4E4C1; margin-bottom:8px;">Get full access</div>
+    <p style="font-size:14px; line-height:1.6; color:#9198A8; margin:0 0 20px;">One-time access to the full Council — unlimited questions and verdicts, no expiration.</p>
+
+    <div id="gate-err" style="display:none; color:#C2695A; font-size:13px; margin-bottom:12px;"></div>
+    <button id="gate-request-btn" style="background:linear-gradient(135deg,#C9A24B,#F4E4C1); color:#0E0F13; border:none; font-weight:700; font-size:14px; padding:12px 22px; border-radius:8px; cursor:pointer;">Request access — $9 →</button>
+
+    <div id="gate-venmo-panel" style="display:none; margin-top:18px; background:#0E0F13; border:1px solid #262932; border-radius:10px; padding:18px 20px; font-size:14px; line-height:1.65; color:#EAECF1;">
+      <strong style="color:#F4E4C1;">Almost there!</strong> Send <strong>$9</strong> to Venmo <strong>@AllThingsAngela1995</strong> (note: "Wealth Council access"). I'll email your access code to <span id="gate-email-echo" style="color:#F4E4C1;"></span> within 24 hours of confirming payment.
+    </div>
+
+    <div style="margin-top:24px; padding-top:20px; border-top:1px solid #262932;">
+      <label style="display:block; font-size:11px; font-family:'IBM Plex Mono',monospace; letter-spacing:0.05em; text-transform:uppercase; color:#7E8494; margin-bottom:8px;">Already have an access code?</label>
+      <div style="display:flex; gap:10px;">
+        <input type="text" id="gate-code" placeholder="Enter code" style="flex:1; background:#0E0F13; border:1px solid #262932; color:#E8E9ED; border-radius:8px; padding:11px 13px; font-family:'Inter',sans-serif; font-size:14.5px; outline:none;">
+        <button id="gate-unlock-btn" style="background:transparent; color:#C9A24B; border:1.5px solid #C9A24B; font-weight:700; font-size:14px; padding:11px 18px; border-radius:8px; cursor:pointer;">Unlock</button>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:24px; text-align:center; font-size:12px; color:#565B68; line-height:1.6;">
+    The Wealth Council is a strategy, mindset, and general-education tool — not individualized financial, investment, tax, or legal advice. Consult a licensed professional in your jurisdiction before acting on anything discussed here.
+  </div>
+
+</div>
+
+<div id="root" style="display:none;"></div>
+
+<script>
+  // Change this to whatever code you send customers after confirming their Venmo payment.
+  var ACCESS_CODE = "COUNCIL2026";
+  var PACK_CODE = "COUNCIL3PACK";
+  var STORAGE_KEY = "wealthCouncilUnlocked";
+  var TRIAL_KEY = "wealthCouncilTrialUsed";
+  var CREDITS_KEY = "wealthCouncilCredits";
+  var EMAIL = "allthingsangela@zohomail.com";
+
+  function getCredits() {
+    return parseInt(localStorage.getItem(CREDITS_KEY) || '0', 10);
+  }
+  function setCredits(n) {
+    localStorage.setItem(CREDITS_KEY, String(n));
+  }
+
+  // Uses this design tool's built-in Claude helper while you're working here.
+  // After you deploy the Cloudflare Worker proxy (see launch/README.md), paste
+  // its URL below and the trial will use that automatically once live.
+  var CLAUDE_PROXY_URL = ""; // e.g. "https://claude-proxy.yoursubdomain.workers.dev"
+
+  function callClaude(opts) {
+    if (window.claude && window.claude.complete) {
+      return window.claude.complete(opts);
+    }
+    if (!CLAUDE_PROXY_URL) {
+      return Promise.reject(new Error("Claude proxy not configured yet."));
+    }
+    return fetch(CLAUDE_PROXY_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(opts),
+    }).then(function (res) {
+      if (!res.ok) throw new Error("Proxy request failed (" + res.status + ")");
+      return res.json();
+    }).then(function (data) {
+      if (data.error) throw new Error(data.error);
+      return data.text;
+    });
+  }
+
+  var TRIAL_SYSTEM = "You are The Wealth Council: ten legendary business operators (Musk, Page, Brin, Bezos, Ellison, Zuckerberg, Huang, Arnault, Ballmer, Dell) plus a dealmaker's-counsel voice, reasoning together on a business or financial decision. This is a ONE-QUESTION FREE TRIAL — give a genuinely useful, specific answer (not a teaser), surfacing where 2-3 of the operators would actually disagree, in about 150-220 words. Write in plain prose — no markdown headers, just bold the operator names using **Name** so they can be highlighted. End with one line inviting them to unlock full access for follow-up questions and a structured verdict.";
+
+  function escapeHtml(s) {
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function formatTrialText(text) {
+    var escaped = escapeHtml(text);
+    // strip stray markdown headers if the model adds them anyway
+    escaped = escaped.replace(/^#+\s*/gm, '');
+    // bold markers -> gold strong tags
+    escaped = escaped.replace(/\*\*([^*]+)\*\*/g, '<strong style="color:#F4E4C1;">$1</strong>');
+    return escaped;
+  }
+
+  document.getElementById('trial-btn').addEventListener('click', function () {
+    var statusEl = document.getElementById('trial-status');
+    var resultEl = document.getElementById('trial-result');
+    var question = document.getElementById('trial-input').value.trim();
+    var usingCredit = false;
+
+    if (localStorage.getItem(TRIAL_KEY) === 'true') {
+      var credits = getCredits();
+      if (credits <= 0) {
+        statusEl.textContent = "You're out of questions — unlock full access or grab a 3-question pack below.";
+        return;
+      }
+      usingCredit = true;
+    }
+    if (!question) {
+      statusEl.textContent = 'Type a question first.';
+      return;
+    }
+
+    statusEl.textContent = 'The Council is deliberating\u2026';
+    resultEl.style.display = 'none';
+    document.getElementById('trial-btn').disabled = true;
+
+    callClaude({
+      model: 'claude-haiku-4-5',
+      max_tokens: 500,
+      system: TRIAL_SYSTEM,
+      messages: [{ role: 'user', content: question }],
+    }).then(function (reply) {
+      var text = (reply || '').trim();
+      resultEl.innerHTML = text ? formatTrialText(text) : 'No response returned — try again.';
+      resultEl.style.display = 'block';
+      if (usingCredit) {
+        var remaining = getCredits() - 1;
+        setCredits(remaining);
+        statusEl.textContent = remaining > 0 ? (remaining + ' question' + (remaining === 1 ? '' : 's') + ' left in your pack.') : "That was your last question — unlock full access or grab another pack below.";
+      } else {
+        localStorage.setItem(TRIAL_KEY, 'true');
+        statusEl.textContent = '';
+      }
+    }).catch(function (err) {
+      statusEl.textContent = 'Something went wrong — try again in a moment.';
+    }).finally(function () {
+      document.getElementById('trial-btn').disabled = false;
+    });
+  });
+
+  function showApp() {
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('root').style.display = 'block';
+    fetch('./wealth-council.jsx')
+      .then(function (r) { return r.text(); })
+      .then(function (src) {
+        var out = Babel.transform(src, { presets: [["react", { runtime: "classic" }]] }).code;
+        (0, eval)(out);
+        var root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(React.createElement(window.WealthCouncil));
+      })
+      .catch(function (e) { document.getElementById('root').textContent = 'Failed to load: ' + e.message; });
+  }
+
+  if (localStorage.getItem(STORAGE_KEY) === 'true') {
+    showApp();
+  } else {
+    if (getCredits() > 0) {
+      document.getElementById('trial-status').textContent = getCredits() + ' question' + (getCredits() === 1 ? '' : 's') + ' left in your pack.';
+    }
+
+    document.getElementById('gate-request-btn').addEventListener('click', function () {
+      var errEl = document.getElementById('gate-err');
+      var name = document.getElementById('gate-name').value.trim();
+      var email = document.getElementById('gate-email').value.trim();
+      errEl.style.display = 'none';
+      if (!name) { errEl.textContent = 'Please add your name.'; errEl.style.display = 'block'; return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Please enter a valid email.'; errEl.style.display = 'block'; return; }
+
+      var subject = encodeURIComponent('Wealth Council access request from ' + name);
+      var body = encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\nRequesting full unlimited access to The Wealth Council ($9). Once Venmo payment is confirmed, send them the access code.');
+      window.location.href = 'mailto:' + EMAIL + '?subject=' + subject + '&body=' + body;
+
+      document.getElementById('gate-email-echo').textContent = email;
+      document.getElementById('gate-venmo-panel').style.display = 'block';
+    });
+
+    document.getElementById('pack-request-btn').addEventListener('click', function () {
+      var errEl = document.getElementById('pack-err');
+      var name = document.getElementById('gate-name').value.trim();
+      var email = document.getElementById('gate-email').value.trim();
+      errEl.style.display = 'none';
+      if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errEl.textContent = 'Fill in your name and email above first, then click here.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      var subject = encodeURIComponent('Wealth Council 3-question pack request from ' + name);
+      var body = encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\nRequesting a 3-question pack for The Wealth Council ($2). Once Venmo payment is confirmed, send them the pack code.');
+      window.location.href = 'mailto:' + EMAIL + '?subject=' + subject + '&body=' + body;
+
+      document.getElementById('pack-email-echo').textContent = email;
+      document.getElementById('pack-venmo-panel').style.display = 'block';
+    });
+
+    document.getElementById('gate-unlock-btn').addEventListener('click', function () {
+      var errEl = document.getElementById('gate-err');
+      var code = document.getElementById('gate-code').value.trim();
+      errEl.style.display = 'none';
+      errEl.style.color = '#C2695A';
+      if (code.toUpperCase() === ACCESS_CODE.toUpperCase()) {
+        localStorage.setItem(STORAGE_KEY, 'true');
+        showApp();
+      } else if (code.toUpperCase() === PACK_CODE.toUpperCase()) {
+        setCredits(getCredits() + 3);
+        localStorage.setItem(TRIAL_KEY, 'true');
+        errEl.style.color = '#8FBF9F';
+        errEl.textContent = 'Pack redeemed — you have ' + getCredits() + ' questions ready above.';
+        errEl.style.display = 'block';
+        document.getElementById('trial-status').textContent = getCredits() + ' question' + (getCredits() === 1 ? '' : 's') + ' left in your pack.';
+      } else {
+        errEl.textContent = 'That code doesn\'t match. Double check it, or request access above.';
+        errEl.style.display = 'block';
+      }
+    });
+  }
+</script>
+</body>
+</html>

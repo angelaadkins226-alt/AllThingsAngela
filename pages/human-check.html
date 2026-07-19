@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Human Check — AI Output Auditing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F2EC;
+    --paper-dim:#ECE9E1;
+    --ink:#1B2A3D;
+    --ink-soft:#4B5A6B;
+    --graphite:#5B5B54;
+    --crimson:#B23A2E;
+    --crimson-dim:#E7CFC9;
+    --verified:#1F6F63;
+    --verified-dim:#CFE3DE;
+    --rule:#D8D4C8;
+    --max:1040px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+  }
+  .wrap{max-width:var(--max); margin:0 auto; padding:0 28px;}
+  a{color:inherit;}
+
+  /* Paper texture */
+  .paper-bg{
+    background-image:
+      linear-gradient(var(--paper) 0%, var(--paper) 100%),
+      repeating-linear-gradient(0deg, rgba(90,90,80,0.035) 0px, rgba(90,90,80,0.035) 1px, transparent 1px, transparent 32px);
+  }
+
+  /* ===== NAV ===== */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(244,242,236,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--rule);
+  }
+  nav.wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    height:68px;
+  }
+  .brand{
+    font-family:'Newsreader',serif; font-weight:600; font-size:20px; letter-spacing:0.01em;
+    display:flex; align-items:center; gap:8px;
+  }
+  .brand .mark{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:26px; height:26px; border:1.5px solid var(--ink); border-radius:50%;
+    font-size:13px; font-family:'IBM Plex Mono',monospace; transform:rotate(-6deg);
+  }
+  .navlinks{display:flex; gap:28px; font-size:14px; font-weight:500;}
+  .navlinks a{text-decoration:none; color:var(--ink-soft); border-bottom:1px solid transparent; padding-bottom:2px; transition:border-color .2s, color .2s;}
+  .navlinks a:hover{color:var(--ink); border-color:var(--crimson);}
+  .nav-cta{
+    font-size:13px; font-weight:600; text-decoration:none;
+    background:var(--ink); color:var(--paper); padding:9px 16px; border-radius:3px;
+    letter-spacing:0.02em;
+  }
+  @media (max-width:700px){ .navlinks{display:none;} }
+
+  /* ===== HERO ===== */
+  .hero{padding:76px 0 64px; position:relative;}
+  .hero-grid{display:grid; grid-template-columns:1.05fr 0.95fr; gap:56px; align-items:center;}
+  @media (max-width:860px){ .hero-grid{grid-template-columns:1fr;} }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--crimson); margin-bottom:16px; display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{content:"¶"; font-size:14px;}
+
+  h1{
+    font-family:'Newsreader',serif; font-weight:500; font-size:clamp(34px,4.6vw,54px);
+    line-height:1.08; margin:0 0 22px; letter-spacing:-0.01em;
+  }
+  h1 .strike{ position:relative; color:var(--ink-soft); }
+  h1 .strike::after{
+    content:""; position:absolute; left:-2%; right:-2%; top:52%; height:2px; background:var(--crimson);
+    transform:rotate(-1.2deg);
+  }
+  h1 .fix{ color:var(--verified); font-style:italic; }
+
+  .sub{
+    font-size:17px; line-height:1.6; color:var(--ink-soft); max-width:46ch; margin-bottom:32px;
+  }
+  .hero-ctas{display:flex; gap:14px; flex-wrap:wrap;}
+  .btn{
+    font-family:'Inter',sans-serif; font-weight:600; font-size:14.5px;
+    padding:13px 22px; border-radius:3px; text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+    cursor:pointer; border:1.5px solid transparent; transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover{ transform:translateY(-1px); }
+  .btn-primary{ background:var(--crimson); color:#fff; }
+  .btn-primary:hover{ box-shadow:0 6px 0 0 rgba(178,58,46,0.25); }
+  .btn-ghost{ background:transparent; color:var(--ink); border-color:var(--ink); }
+  .btn-ghost:hover{ box-shadow:0 6px 0 0 rgba(27,42,61,0.12); }
+
+  /* Hero document mock */
+  .doc-mock{
+    background:#FFFEFB; border:1px solid var(--rule); border-radius:2px;
+    box-shadow:0 20px 40px -18px rgba(27,42,61,0.28), 0 2px 0 var(--rule);
+    padding:30px 30px 26px; position:relative; transform:rotate(0.6deg);
+  }
+  .doc-mock::before{
+    content:"QUARTERLY STATUS — DRAFT"; position:absolute; top:-11px; left:24px;
+    background:var(--paper); padding:0 8px; font-family:'IBM Plex Mono',monospace; font-size:10px;
+    letter-spacing:0.06em; color:var(--graphite);
+  }
+  .stamp{
+    position:absolute; top:18px; right:22px; border:2.5px solid var(--verified); color:var(--verified);
+    font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:12px; letter-spacing:0.05em;
+    padding:5px 10px; border-radius:4px; transform:rotate(9deg); opacity:0;
+    animation:stampIn .5s cubic-bezier(.2,1.5,.4,1) 1.1s forwards;
+  }
+  @keyframes stampIn{ from{opacity:0; transform:rotate(9deg) scale(2);} to{opacity:1; transform:rotate(9deg) scale(1);} }
+  .doc-line{ font-family:'IBM Plex Mono',monospace; font-size:13px; line-height:1.9; color:#2b2b26; }
+  .doc-mock del{ color:var(--crimson); text-decoration-color:var(--crimson); }
+  .doc-mock ins{ text-decoration:none; color:var(--verified); font-family:'Inter',sans-serif; font-weight:600; }
+  .margin-note{
+    font-family:'Newsreader',serif; font-style:italic; font-size:12.5px; color:var(--crimson);
+    margin-top:14px; padding-left:14px; border-left:2px solid var(--crimson-dim);
+  }
+
+  /* ===== SECTION SHELL ===== */
+  section{ padding:72px 0; border-top:1px solid var(--rule); }
+  .kicker{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--graphite); margin-bottom:10px;
+  }
+  h2{ font-family:'Newsreader',serif; font-weight:500; font-size:clamp(26px,3vw,36px); margin:0 0 14px; }
+  .section-sub{ color:var(--ink-soft); max-width:60ch; line-height:1.6; margin-bottom:44px; font-size:15.5px;}
+
+  /* ===== SERVICES ===== */
+  .cards{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  @media (max-width:860px){ .cards{grid-template-columns:1fr;} }
+  .card{
+    background:#FFFEFB; border:1px solid var(--rule); border-radius:3px; padding:28px 24px;
+    position:relative; transition:box-shadow .2s ease, transform .2s ease;
+  }
+  .card:hover{ box-shadow:0 14px 30px -16px rgba(27,42,61,0.25); transform:translateY(-3px); }
+  .card .glyph{
+    font-family:'IBM Plex Mono',monospace; font-size:20px; color:var(--crimson);
+    border:1.5px solid var(--crimson); width:38px; height:38px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; margin-bottom:18px;
+  }
+  .card.mid .glyph{ color:var(--ink); border-color:var(--ink); }
+  .card.high .glyph{ color:var(--verified); border-color:var(--verified); }
+  .card h3{ font-family:'Newsreader',serif; font-size:20px; font-weight:600; margin:0 0 4px; }
+  .price{ font-family:'IBM Plex Mono',monospace; font-size:14px; color:var(--graphite); margin-bottom:14px; }
+  .card ul{ margin:0; padding-left:0; list-style:none; }
+  .card li{ font-size:14px; line-height:1.6; color:var(--ink-soft); margin-bottom:8px; padding-left:16px; position:relative; }
+  .card li::before{ content:"—"; position:absolute; left:0; color:var(--rule); }
+  .card .tag{
+    position:absolute; top:24px; right:24px; font-family:'IBM Plex Mono',monospace; font-size:10px;
+    letter-spacing:0.05em; text-transform:uppercase; color:#fff; background:var(--crimson);
+    padding:3px 8px; border-radius:10px;
+  }
+
+  /* ===== DEMO ===== */
+  .demo-shell{
+    background:#FFFEFB; border:1px solid var(--rule); border-radius:3px; overflow:hidden;
+  }
+  .toggle-row{
+    display:flex; align-items:center; justify-content:center; gap:16px; padding:20px; border-bottom:1px solid var(--rule);
+    background:var(--paper-dim);
+  }
+  .toggle-label{ font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.05em; text-transform:uppercase; }
+  .toggle-label.raw{ color:var(--crimson); }
+  .toggle-label.audited{ color:var(--verified); }
+  .switch{
+    position:relative; width:56px; height:28px; background:var(--ink); border-radius:20px; cursor:pointer; border:none; padding:0;
+  }
+  .switch .knob{
+    position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%; background:#fff;
+    transition:transform .25s cubic-bezier(.4,0,.2,1); box-shadow:0 1px 3px rgba(0,0,0,0.3);
+  }
+  .switch.on .knob{ transform:translateX(28px); }
+  .demo-body{ padding:34px 36px; min-height:230px; }
+  .demo-text{ font-size:16px; line-height:1.75; }
+  .demo-text.raw-mode{ font-family:'IBM Plex Mono',monospace; font-size:14.5px; color:#3a3a34; }
+  .demo-text.audited-mode{ font-family:'Newsreader',serif; font-size:18px; color:var(--ink); }
+  .demo-flag{
+    display:inline-block; margin-top:18px; font-family:'Inter',sans-serif; font-size:12.5px; font-weight:600;
+    padding:4px 10px; border-radius:3px;
+  }
+  .demo-flag.raw{ background:var(--crimson-dim); color:var(--crimson); }
+  .demo-flag.audited{ background:var(--verified-dim); color:var(--verified); }
+  .highlight-err{ background:var(--crimson-dim); color:var(--crimson); padding:1px 3px; border-radius:2px; }
+  .highlight-fix{ background:var(--verified-dim); color:var(--verified); padding:1px 3px; border-radius:2px; font-weight:600; }
+
+  /* ===== HOW IT WORKS ===== */
+  .steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:0; counter-reset:step; }
+  @media (max-width:860px){ .steps{grid-template-columns:1fr;} }
+  .step{ padding:0 26px 0 0; position:relative; }
+  .step:not(:last-child)::after{
+    content:""; position:absolute; top:18px; right:-2px; width:14px; height:1px; background:var(--rule);
+  }
+  @media (max-width:860px){ .step{ padding:0 0 30px 0; } .step:not(:last-child)::after{display:none;} }
+  .step .num{
+    font-family:'Newsreader',serif; font-style:italic; font-size:34px; color:var(--crimson-dim); margin-bottom:10px; display:block;
+  }
+  .step h4{ font-family:'Newsreader',serif; font-size:18px; margin:0 0 8px; font-weight:600; }
+  .step p{ font-size:14.5px; color:var(--ink-soft); line-height:1.6; margin:0; }
+
+  /* ===== TRUST ===== */
+  .trust-grid{ display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:start; }
+  @media (max-width:860px){ .trust-grid{grid-template-columns:1fr;} }
+  .trust-list{ list-style:none; margin:0; padding:0; }
+  .trust-list li{
+    display:flex; gap:14px; padding:16px 0; border-bottom:1px solid var(--rule); font-size:15px; color:var(--ink-soft); line-height:1.5;
+  }
+  .trust-list li:last-child{ border-bottom:none; }
+  .trust-list .ico{ font-family:'IBM Plex Mono',monospace; color:var(--crimson); flex-shrink:0; }
+  blockquote{
+    font-family:'Newsreader',serif; font-style:italic; font-size:20px; line-height:1.5; color:var(--ink);
+    margin:0; padding:26px 0 0 22px; border-left:2px solid var(--crimson-dim);
+  }
+  blockquote cite{ display:block; margin-top:14px; font-family:'IBM Plex Mono',monospace; font-style:normal; font-size:12px; color:var(--graphite); }
+
+  /* ===== CONTACT ===== */
+  #contact{ background:var(--ink); color:var(--paper); border-top:none; }
+  #contact .kicker{ color:#9FB0C2; }
+  #contact h2{ color:#fff; }
+  #contact .section-sub{ color:#C4CDD6; }
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+  @media (max-width:700px){ .form-grid{grid-template-columns:1fr;} }
+  label{ display:block; font-size:12px; font-family:'IBM Plex Mono',monospace; letter-spacing:0.05em; text-transform:uppercase; color:#9FB0C2; margin-bottom:6px; }
+  input, select, textarea{
+    width:100%; background:#26374A; border:1px solid #3C4F63; color:#fff; border-radius:3px;
+    padding:11px 13px; font-family:'Inter',sans-serif; font-size:14.5px;
+  }
+  input:focus, select:focus, textarea:focus{ outline:2px solid var(--crimson); outline-offset:1px; }
+  textarea{ min-height:100px; resize:vertical; }
+  .field{ margin-bottom:16px; }
+  .form-foot{ display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-top:8px; }
+  .fine{ font-size:12.5px; color:#8B9BAC; max-width:40ch; }
+  .btn-submit{
+    background:var(--crimson); color:#fff; border:none; font-family:'Inter',sans-serif; font-weight:600;
+    font-size:15px; padding:14px 26px; border-radius:3px; cursor:pointer; transition:transform .15s ease;
+  }
+  .btn-submit:hover{ transform:translateY(-1px); }
+  .form-success{
+    background:#1F6F63; border:1px solid #2C8A7B; color:#fff; padding:16px 18px; border-radius:3px;
+    font-size:14.5px; margin-bottom:20px; line-height:1.5;
+  }
+  .fallback-link{ color:#C4CDD6; text-decoration:underline; }
+  .fallback-link:hover{ color:#fff; }
+  .btn-submit:disabled{ opacity:0.6; cursor:wait; transform:none; }
+  .tone-divider{ display:flex; align-items:center; gap:12px; margin:32px 0 8px; }
+  .tone-divider::before, .tone-divider::after{ content:""; flex:1; height:1px; background:#3C4F63; }
+  .tone-divider-label{ font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#9FB0C2; white-space:nowrap; }
+  .tone-intro{ font-size:13px; color:#8B9BAC; margin:0 0 20px; line-height:1.5; }
+  .payment-row{ display:flex; gap:28px; margin-top:36px; padding-top:28px; border-top:1px solid #3C4F63; flex-wrap:wrap; }
+  .payment-row div{ font-size:13.5px; color:#C4CDD6; }
+  .payment-row strong{ display:block; color:#fff; font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.05em; text-transform:uppercase; margin-bottom:4px; }
+
+  footer{ padding:26px 0; text-align:center; font-size:12.5px; color:var(--graphite); background:var(--paper-dim); }
+</style>
+</head>
+<body class="paper-bg">
+
+<header>
+  <nav class="wrap">
+    <div class="brand"><span class="mark">✓</span> The Human Check</div>
+    <div class="navlinks">
+      <a href="#services">Services</a>
+      <a href="#demo">Sample Audit</a>
+      <a href="#how">How it works</a>
+      <a href="#trust">Why me</a>
+    </div>
+    <a class="nav-cta" href="#contact">Get a free audit</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Human quality assurance for AI writing</div>
+      <h1>Your AI wrote it <span class="strike">confidently.</span><br>I'll make sure it's <span class="fix">actually right.</span></h1>
+      <p class="sub">Reports, emails, and technical docs drafted by AI look polished — until a wrong number or a robotic sentence reaches your boss. I check the facts, fix the tone, and get it ready to send.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#contact">Send your first draft — free</a>
+        <a class="btn btn-ghost" href="#demo">See a sample audit</a>
+      </div>
+    </div>
+    <div class="doc-mock">
+      <div class="stamp">VERIFIED ✓</div>
+      <div class="doc-line">
+        "...resulting in a productivity increase from 120 to 210 cases per month, representing a <del>40%</del> <ins>75%</ins> improvement in throughput."
+      </div>
+      <div class="margin-note">Math didn't check out — corrected before it reached leadership.</div>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="wrap">
+    <div class="kicker">Services</div>
+    <h2>Three ways to check an AI's work</h2>
+    <p class="section-sub">Pick based on what you're worried about — the facts, the voice, or both. Priced flat, per 1,000 words, no subscriptions.</p>
+    <div class="cards">
+      <div class="card">
+        <span class="glyph">§</span>
+        <h3>The Quick Polish</h3>
+        <div class="price">$35 / 1,000 words · same day</div>
+        <ul>
+          <li>Strips robotic "AI-speak" phrasing</li>
+          <li>Matches tone to your natural voice</li>
+          <li>Tightens structure, cuts filler</li>
+        </ul>
+      </div>
+      <div class="card mid">
+        <span class="glyph">¶</span>
+        <span class="tag">Most requested</span>
+        <h3>The Fact-Check Audit</h3>
+        <div class="price">$50 / 1,000 words · 24 hrs</div>
+        <ul>
+          <li>Verifies figures, math, and logic</li>
+          <li>Flags unsupported claims or citations</li>
+          <li>Checks code logic against your source</li>
+        </ul>
+      </div>
+      <div class="card high">
+        <span class="glyph">✓</span>
+        <h3>The Full Rewrite</h3>
+        <div class="price">$75 / 1,000 words · 24–48 hrs</div>
+        <ul>
+          <li>Accuracy + voice, combined</li>
+          <li>Plain-language & etiquette formatting</li>
+          <li>Sensitivity pass for federal/corporate readers</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="wrap">
+    <div class="kicker">Before &amp; after</div>
+    <h2>Same paragraph. One catch that mattered.</h2>
+    <p class="section-sub">This is a real excerpt style — a quarterly status update. Flip the switch.</p>
+    <div class="demo-shell">
+      <div class="toggle-row">
+        <span class="toggle-label raw">Raw AI draft</span>
+        <button class="switch" id="demoSwitch" aria-label="Toggle before and after" onclick="toggleDemo()"><span class="knob"></span></button>
+        <span class="toggle-label audited">Audited</span>
+      </div>
+      <div class="demo-body" id="demoBody">
+        <!-- filled by JS -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="kicker">Process</div>
+    <h2>How it works</h2>
+    <p class="section-sub">No accounts, no software to install. It happens over email or text.</p>
+    <div class="steps">
+      <div class="step">
+        <span class="num">1</span>
+        <h4>Send your draft</h4>
+        <p>Paste it in an email or attach the doc. Tell me which package you want, or I'll recommend one.</p>
+      </div>
+      <div class="step">
+        <span class="num">2</span>
+        <h4>Get it audited</h4>
+        <p>You get back a corrected version plus a short list of what was wrong and why it mattered.</p>
+      </div>
+      <div class="step">
+        <span class="num">3</span>
+        <h4>Approve &amp; pay</h4>
+        <p>Happy with it? Pay by Venmo or Zelle. First document is free, no card required, ever.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="trust">
+  <div class="wrap trust-grid">
+    <div>
+      <div class="kicker">Why me</div>
+      <h2>I'm not an editor guessing at AI. I build with it.</h2>
+      <ul class="trust-list">
+        <li><span class="ico">✓</span> Hands-on experience building AI-powered tools — I know exactly where models hallucinate, drop context, or get sloppy with numbers</li>
+        <li><span class="ico">✓</span> Trained in business process review, so I catch logic gaps, not just typos</li>
+        <li><span class="ico">✓</span> Fast turnaround, direct communication, no agency markup</li>
+      </ul>
+    </div>
+    <blockquote>
+      "I don't just clean up sentences. I know why an AI says a report is up 40% when the numbers say 75% — and I check every number before it leaves your desk."
+      <cite>— The Human Check</cite>
+    </blockquote>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="kicker">Get started</div>
+    <h2>Send your first audit — it's free</h2>
+    <p class="section-sub">Fill this out and it'll open a pre-filled email in your mail app, ready to send with your draft attached. The tone section below is what lets me match your actual voice instead of guessing.</p>
+
+    <form id="intakeForm">
+      <div id="formSuccess" class="form-success" style="display:none;">
+        <strong>Got it — thanks!</strong> Your request came through. I'll reply within 24 hours to confirm and get your draft.
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label for="name">Your name</label>
+          <input type="text" id="name" required>
+        </div>
+        <div class="field">
+          <label for="email">Your email</label>
+          <input type="email" id="email" required>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label for="package">Which package?</label>
+          <select id="package">
+            <option>Not sure — recommend one</option>
+            <option>The Quick Polish ($35/1,000 words)</option>
+            <option>The Fact-Check Audit ($50/1,000 words)</option>
+            <option>The Full Rewrite ($75/1,000 words)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="length">Approx. document length</label>
+          <select id="length">
+            <option>Under 500 words</option>
+            <option>500–1,000 words</option>
+            <option>1,000–2,500 words</option>
+            <option>2,500+ words</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="notes">What's the document, and what are you worried about?</label>
+        <textarea id="notes" placeholder="e.g. a Q3 status report for leadership — worried the numbers might be off"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="draftText">Paste your draft for an instant pre-audit (optional, recommended)</label>
+        <textarea id="draftText" placeholder="Paste the AI-generated draft here — I'll run it through my auditing agent right now, before you even submit, and you'll see the flags immediately."></textarea>
+        <div style="margin-top:10px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+          <button type="button" id="runAuditBtn" class="btn" style="padding:9px 16px; font-size:13px; background:transparent; color:#fff; border:1.5px solid #fff;">Run instant pre-audit</button>
+          <span id="auditStatus" style="font-size:12.5px; color:#C4CDD6;"></span>
+        </div>
+        <div id="auditResult" style="display:none; margin-top:14px; background:#26374A; border:1px solid #3C4F63; border-radius:3px; padding:16px 18px; font-size:13.5px; line-height:1.7; color:#E4E9EE; white-space:pre-wrap;"></div>
+      </div>
+
+      <div class="tone-divider">
+        <span class="tone-divider-label">Tone assessment</span>
+      </div>
+      <p class="tone-intro">This part matters most for the Polish and Full Rewrite packages — it's how I match your actual voice instead of guessing.</p>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="voice">Your natural writing voice</label>
+          <select id="voice">
+            <option>Not sure — match my example below</option>
+            <option>Direct & no-nonsense</option>
+            <option>Warm & conversational</option>
+            <option>Formal & polished</option>
+            <option>Technical & precise</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="audience">Who's reading the final version?</label>
+          <select id="audience">
+            <option>My boss or leadership</option>
+            <option>A client or external partner</option>
+            <option>The general public</option>
+            <option>Colleagues / internal team</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="sample">Paste a paragraph you wrote yourself (optional, but the single best way to match your voice)</label>
+        <textarea id="sample" placeholder="Any email or doc in your own words — doesn't need to be related to this project"></textarea>
+      </div>
+      <div class="field">
+        <label for="avoid">Words, phrases, or style rules to follow or avoid</label>
+        <textarea id="avoid" placeholder="e.g. never use 'leverage' · agency requires plain-language style · no contractions"></textarea>
+      </div>
+      <div class="form-foot">
+        <p class="fine">Submits directly to me — no email app required. Prefer to just email? <a id="fallbackMailto" href="#" class="fallback-link">Click here instead</a>.</p>
+        <button type="submit" class="btn-submit" id="submitBtn">Send my draft request →</button>
+      </div>
+    </form>
+
+    <div class="payment-row">
+      <div><strong>Venmo</strong>@your-venmo-handle</div>
+      <div><strong>Zelle</strong>your-email@example.com</div>
+      <div><strong>Response time</strong>Within 24 hours</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  The Human Check — independent AI-output auditing. Not a substitute for legal, compliance, or clinical review.
+</footer>
+
+<script>
+  // ---- EDIT THESE THREE LINES BEFORE LAUNCH ----
+  const CONFIG = {
+    email: "allthingsangela@zohomail.com",
+    venmo: "@AllThingsAngela1995",
+    zelle: "allthingsangela@zohomail.com",
+    // Sign up free at formspree.io, create a form, and paste your endpoint URL below.
+    // Until you replace this, the form will fall back to opening an email instead.
+    formspreeEndpoint: "https://formspree.io/f/yourFormId"
+  };
+
+  // ---- Operations Agent: instant pre-audit on the pasted draft ----
+  const OPS_SYSTEM = `You are the Operations Agent for "The Human Check," an AI-output auditing service. A human editor will make the final call, but your job is a fast first-pass triage on a pasted draft. Look specifically for: numbers/stats that seem inconsistent or unverifiable, confident claims that sound hallucinated or unsupported, missing citations, internal contradictions, and sloppy or ambiguous phrasing that could mislead a reader. Output a short bulleted list of concrete flags (quote the exact phrase, then say what's wrong) — no more than 8 flags, most important first. If the draft looks clean, say so briefly. Never rewrite the draft yourself; only flag.`;
+
+  // Uses this design tool's built-in Claude helper while you're working here.
+  // After you deploy the Cloudflare Worker proxy (see launch/README.md), paste
+  // its URL below and the site will use that automatically once live.
+  const CLAUDE_PROXY_URL = ""; // e.g. "https://claude-proxy.yoursubdomain.workers.dev"
+
+  async function callClaude(opts) {
+    if (window.claude && window.claude.complete) {
+      return await window.claude.complete(opts);
+    }
+    if (!CLAUDE_PROXY_URL) {
+      throw new Error("Claude proxy not configured yet — set CLAUDE_PROXY_URL after deploying your Worker.");
+    }
+    const res = await fetch(CLAUDE_PROXY_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(opts),
+    });
+    if (!res.ok) throw new Error(`Proxy request failed (${res.status})`);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    return data.text;
+  }
+
+  let lastAuditResult = "";
+
+  async function runInstantAudit(){
+    const draft = document.getElementById('draftText').value.trim();
+    const statusEl = document.getElementById('auditStatus');
+    const resultEl = document.getElementById('auditResult');
+    if (!draft) {
+      statusEl.textContent = "Paste a draft above first.";
+      return;
+    }
+    statusEl.textContent = "Running pre-audit\u2026";
+    resultEl.style.display = 'none';
+    try {
+      const reply = await callClaude({
+        model: "claude-haiku-4-5",
+        max_tokens: 700,
+        system: OPS_SYSTEM,
+        messages: [{ role: "user", content: draft }],
+      });
+      lastAuditResult = (reply || "").trim() || "No flags returned.";
+      resultEl.textContent = lastAuditResult;
+      resultEl.style.display = 'block';
+      statusEl.textContent = "Pre-audit complete \u2014 this comes with your submission.";
+    } catch (err) {
+      statusEl.textContent = "Pre-audit failed \u2014 you can still submit; I'll review manually.";
+    }
+  }
+
+  document.getElementById('runAuditBtn').addEventListener('click', runInstantAudit);
+
+  const demoData = {
+    raw: `<div class="demo-text raw-mode">In today's rapidly evolving business landscape, it is imperative that organizations leverage cutting-edge technology solutions to drive synergistic outcomes and enhance stakeholder value.<br><br>
+Our Q3 initiative has successfully implemented a new intake process, resulting in a productivity increase from 120 cases per month to 210 cases per month, representing a <span class="highlight-err">40% improvement</span> in throughput.<br><br>
+Moving forward, the team will continue to leverage best-in-class methodologies to ensure continued alignment with organizational objectives.</div>
+<span class="demo-flag raw">⚠ Filler opener, a math error, and a meaningless close</span>`,
+    audited: `<div class="demo-text audited-mode">This quarter, we redesigned the intake process for the case management team.<br><br>
+Monthly throughput rose from 120 to 210 cases — a <span class="highlight-fix">75% increase</span>, not 40% as originally drafted.<br><br>
+Next quarter, we'll focus on standardizing the new intake steps across the remaining two regional offices.</div>
+<span class="demo-flag audited">✓ Corrected, specific, and ready for leadership</span>`
+  };
+
+  const demoBody = document.getElementById('demoBody');
+  const demoSwitch = document.getElementById('demoSwitch');
+  let audited = false;
+  function renderDemo(){
+    demoBody.innerHTML = audited ? demoData.audited : demoData.raw;
+    demoSwitch.classList.toggle('on', audited);
+  }
+  function toggleDemo(){ audited = !audited; renderDemo(); }
+  renderDemo();
+
+  // Fill in payment placeholders
+  document.querySelector('.payment-row div:nth-child(1)').innerHTML = '<strong>Venmo</strong>' + CONFIG.venmo;
+  document.querySelector('.payment-row div:nth-child(2)').innerHTML = '<strong>Zelle</strong>' + CONFIG.zelle;
+
+  // Intake form -> mailto
+  function buildMailto(){
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const pkg = document.getElementById('package').value;
+    const length = document.getElementById('length').value;
+    const notes = document.getElementById('notes').value;
+    const voice = document.getElementById('voice').value;
+    const audience = document.getElementById('audience').value;
+    const sample = document.getElementById('sample').value;
+    const avoid = document.getElementById('avoid').value;
+    const draftText = document.getElementById('draftText').value;
+
+    const subject = encodeURIComponent(`AI-Audit request from ${name}`);
+    const body = encodeURIComponent(
+`Name: ${name}
+Email: ${email}
+Package requested: ${pkg}
+Approx. length: ${length}
+
+Notes:
+${notes}
+
+--- Tone assessment ---
+Natural voice: ${voice}
+Audience: ${audience}
+Words/style to avoid: ${avoid}
+
+Writing sample:
+${sample}
+
+Draft pasted for pre-audit:
+${draftText || "(none pasted — attach separately)"}
+
+--- Operations Agent pre-audit flags ---
+${lastAuditResult || "(not run — review manually)"}`
+    );
+    return `mailto:${CONFIG.email}?subject=${subject}&body=${body}`;
+  }
+
+  // Fallback link always works, regardless of Formspree setup
+  document.getElementById('fallbackMailto').addEventListener('click', function(e){
+    e.preventDefault();
+    window.location.href = buildMailto();
+  });
+
+  const formspreeReady = CONFIG.formspreeEndpoint && !CONFIG.formspreeEndpoint.includes('yourFormId');
+
+  document.getElementById('intakeForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const form = e.target;
+    const submitBtn = document.getElementById('submitBtn');
+
+    if (!formspreeReady) {
+      // Formspree not configured yet — fall back to mailto so the form still works
+      window.location.href = buildMailto();
+      return;
+    }
+
+    const payload = {
+      name: document.getElementById('name').value,
+      email: document.getElementById('email').value,
+      package: document.getElementById('package').value,
+      length: document.getElementById('length').value,
+      notes: document.getElementById('notes').value,
+      voice: document.getElementById('voice').value,
+      audience: document.getElementById('audience').value,
+      writing_sample: document.getElementById('sample').value,
+      style_to_avoid: document.getElementById('avoid').value,
+      draft_text: document.getElementById('draftText').value,
+      operations_agent_flags: lastAuditResult || "(not run — review manually)"
+    };
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Sending...";
+
+    fetch(CONFIG.formspreeEndpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(res => {
+      if (res.ok) {
+        form.style.display = 'none';
+        document.getElementById('formSuccess').style.display = 'block';
+      } else {
+        throw new Error('Submission failed');
+      }
+    })
+    .catch(() => {
+      // Network/Formspree error — fall back to mailto so the request isn't lost
+      window.location.href = buildMailto();
+    })
+    .finally(() => {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Send my draft request →";
+    });
+  });
+</script>
+
+</body>
+</html>

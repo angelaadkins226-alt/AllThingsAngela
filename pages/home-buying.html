@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EquityIQ — Townhome Search</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root{
+  --bg:#0F1113; --bg-soft:#14171A; --card:#191D21; --card-hi:#1F242A;
+  --ivory:#EDE8DC; --ivory-dim:#B9B3A4; --muted:#847E70;
+  --gold:#C6A566; --gold-soft:#D8C39A; --gold-line:rgba(198,165,102,.22);
+  --pine:#8FBF9F; --amber:#D9B36A; --rust:#C77B6B; --slate:#9A958A;
+  --amber-t:#D9B36A;
+  --hairline:rgba(237,232,220,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+::selection{background:var(--gold);color:var(--bg)}
+body{background:var(--bg);color:var(--ivory);font-family:'Inter',sans-serif;font-weight:300;padding:44px 24px 90px;
+     background-image:radial-gradient(1200px 500px at 50% -100px, rgba(198,165,102,.06), transparent)}
+.wrap{max-width:980px;margin:0 auto}
+.overline{font-size:10.5px;font-weight:500;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+h1{font-family:'Cormorant Garamond',serif;font-size:46px;font-weight:500;letter-spacing:.02em;line-height:1}
+h1::after{content:"";display:block;width:64px;height:1px;background:var(--gold);margin-top:16px}
+.sub{color:var(--muted);font-size:12.5px;margin-top:14px;letter-spacing:.04em}
+h2{font-family:'Cormorant Garamond',serif;font-size:29px;font-weight:500;margin:52px 0 6px;color:var(--ivory)}
+.areasub{color:var(--muted);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px}
+
+.alertbox{background:var(--card);border:1px solid var(--gold-line);border-radius:6px;padding:22px 24px;margin-top:26px;
+          box-shadow:0 0 40px rgba(198,165,102,.05)}
+.alertbox h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--gold-soft);margin-bottom:10px}
+.alertbox ul{list-style:none}
+.alertbox li{font-size:13px;line-height:1.7;padding:9px 0;border-bottom:1px solid var(--hairline);color:var(--ivory-dim)}
+.alertbox li b{color:var(--ivory);font-weight:500}
+.alertbox li:last-child{border-bottom:none}
+.atag{font-size:9.5px;font-weight:600;padding:3px 9px;border-radius:2px;margin-right:8px;text-transform:uppercase;letter-spacing:.14em}
+.atag.new{background:var(--gold);color:var(--bg)}
+.atag.price_drop{background:transparent;border:1px solid var(--gold);color:var(--gold)}
+.atag.fee_change{background:transparent;border:1px solid var(--rust);color:var(--rust)}
+.baseline{background:var(--card);border:1px dashed var(--gold-line);border-radius:6px;padding:16px 18px;margin-top:26px;font-size:13px;color:var(--muted)}
+
+.card{background:var(--card);border:1px solid var(--hairline);border-radius:6px;margin-bottom:18px;cursor:pointer;
+      transition:border-color .25s, transform .25s, box-shadow .25s;overflow:hidden}
+.card:hover{border-color:var(--gold-line);transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,.45)}
+.cardtop{display:flex;gap:20px;padding:20px}
+.thumb{width:152px;height:122px;border-radius:3px;object-fit:cover;background:var(--bg-soft);flex-shrink:0;
+       filter:saturate(.92)}
+.cardmain{flex:1;min-width:0}
+.row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.addr{font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:500;color:var(--ivory);line-height:1.1}
+.citystate{color:var(--muted);font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-top:4px}
+.price{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--gold-soft);white-space:nowrap}
+.meta{color:var(--muted);font-size:12.5px;margin-top:9px;line-height:1.7}
+.meta b{color:var(--ivory);font-weight:500}
+.pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
+.pill{font-size:9.5px;font-weight:500;padding:4px 11px;border-radius:2px;white-space:nowrap;
+      letter-spacing:.12em;text-transform:uppercase;border:1px solid;background:transparent}
+.pill.pine{color:var(--pine);border-color:rgba(143,191,159,.35)}
+.pill.amber{color:var(--amber);border-color:rgba(217,179,106,.4)}
+.pill.rust{color:var(--rust);border-color:rgba(199,123,107,.4)}
+.pill.slate{color:var(--slate);border-color:rgba(154,149,138,.3)}
+.pill.solid-pine{background:var(--pine);border-color:var(--pine);color:var(--bg);font-weight:600}
+.pill.solid-amber{background:var(--amber);border-color:var(--amber);color:var(--bg);font-weight:600}
+.pill.status{background:var(--ivory);border-color:var(--ivory);color:var(--bg);font-weight:600}
+
+.detail{display:none;border-top:1px solid var(--hairline);padding:22px 24px 26px}
+.card.open .detail{display:block}
+.photostrip{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px}
+.photostrip img{height:150px;border-radius:3px;flex-shrink:0;filter:saturate(.92)}
+.q{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--gold-soft);margin:22px 0 8px}
+.detail p{font-size:13.5px;line-height:1.75;color:var(--ivory-dim)}
+.detail p b{color:var(--ivory);font-weight:500}
+.sig{margin:8px 0 0;padding:0;list-style:none}
+.sig li{font-size:13px;line-height:1.65;margin-bottom:7px;padding-left:18px;position:relative;color:var(--ivory-dim)}
+.sig li::before{content:"";position:absolute;left:0;top:9px;width:14px;height:1px;background:var(--amber)}
+.sig.pos li::before{background:var(--pine)}
+.sig.mot li::before{background:var(--rust)}
+.sig .ph{font-weight:500;color:var(--ivory)}
+.desc{font-size:13px;color:var(--muted);font-style:italic;line-height:1.75;margin-top:8px;
+      border-left:1px solid var(--gold-line);padding-left:14px}
+.mathbox{background:var(--bg-soft);border-left:2px solid var(--gold);border-radius:0 4px 4px 0;
+         padding:14px 16px;margin-top:8px;font-size:13px;line-height:1.9;color:var(--ivory-dim)}
+.mathbox b{font-family:'IBM Plex Mono',monospace;font-weight:500;color:var(--ivory)}
+
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:10px;background:var(--card);border-radius:6px;overflow:hidden;border:1px solid var(--hairline)}
+th{text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:.16em;color:var(--gold);padding:11px 12px;border-bottom:1px solid var(--gold-line);font-weight:500}
+td{padding:10px 12px;border-bottom:1px solid var(--hairline);color:var(--ivory-dim)}
+tr:last-child td{border-bottom:none}
+td.n{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ivory)}
+a{color:var(--gold-soft);text-decoration:none;border-bottom:1px solid var(--gold-line);transition:border-color .2s}
+a:hover{border-color:var(--gold)}
+.note{font-size:11.5px;color:var(--muted);line-height:1.8;margin-top:34px;border-top:1px solid var(--hairline);padding-top:18px}
+details.compsbox summary{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--ivory-dim);cursor:pointer;margin-top:26px}
+details.compsbox summary:hover{color:var(--gold-soft)}
+.empty{background:var(--card);border:1px dashed var(--gold-line);border-radius:6px;padding:26px;font-size:13.5px;color:var(--muted)}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-top:24px}
+.ztools{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin:0 0 18px;padding:12px 14px;
+        background:var(--bg-soft);border:1px solid var(--hairline);border-radius:6px}
+.ztools .chip{padding:6px 12px;font-size:9.5px}
+.tdiv{width:1px;height:16px;background:var(--gold-line);margin:0 4px}
+.showing{margin-left:auto;font-size:9.5px;color:var(--gold);letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
+.alertbox summary{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--gold-soft);cursor:pointer;list-style-position:inside}
+.alertbox summary:hover{color:var(--gold)}
+.alertnote{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.6}
+.chip{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:8px 16px;border-radius:2px;
+      border:1px solid var(--gold-line);background:transparent;cursor:pointer;color:var(--ivory-dim);
+      transition:all .2s;font-family:'Inter',sans-serif}
+.chip:hover{border-color:var(--gold);color:var(--ivory)}
+.chip.active{background:var(--gold);color:var(--bg);border-color:var(--gold);font-weight:600}
+.chip.save{margin-left:auto;border-color:var(--gold);color:var(--gold)}
+.chip.save:hover{background:var(--gold);color:var(--bg)}
+
+.pipe{background:var(--bg-soft);border:1px solid var(--hairline);border-radius:4px;padding:14px 16px;margin-top:20px;display:flex;flex-direction:column;gap:10px}
+.pipe label{font-size:9.5px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.2em}
+.pipe select{font-family:'Inter',sans-serif;font-size:13px;padding:8px 10px;border-radius:3px;border:1px solid var(--hairline);background:var(--card);color:var(--ivory)}
+.pipe textarea{font-family:'Inter',sans-serif;font-size:13px;padding:9px 11px;border-radius:3px;border:1px solid var(--hairline);background:var(--card);color:var(--ivory);min-height:56px;resize:vertical}
+.pipe textarea::placeholder{color:var(--muted)}
+
+::-webkit-scrollbar{height:8px;width:10px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#2A2F35;border-radius:4px}
+@media(max-width:560px){.thumb{width:100px;height:88px}.price{font-size:21px}h1{font-size:34px}.cardtop{gap:14px;padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="overline">Private Property Intelligence</div>
+  <h1>EquityIQ</h1>
+  <div class="sub" id="subhead"></div>
+  <div id="alerts"></div>
+  <div class="toolbar" id="zonebar" style="display:none"></div>
+  <div class="toolbar" id="toolbar" style="display:none;margin-top:8px">
+    <button class="chip save" id="savepipe">Save pipeline file</button>
+  </div>
+  <div id="areas"></div>
+  <p class="note">Data scraped from Realtor.com via HomeHarvest for personal research. Value estimates are
+  trimmed $/sqft medians from nearby townhome solds — a starting point, not an appraisal. Renovation tiers
+  come from listing language; verify against photos (ask Claude to review any shortlisted property's photos).
+  NACA reads are heuristics; only the HAND inspection is authoritative. Appreciation combines Zillow's
+  zip-level index with this tool's own comps trend; past appreciation is not a guarantee. Monthly payment
+  is a rough estimate at the NACA rate configured in homeharvest_pull.py — verify current rate at naca.com.
+  The EquityIQ score (0–100) weighs price-vs-comps, renovation payback, zip appreciation, seller motivation,
+  and days on market — use it to prioritize, not to decide.</p>
+</div>
+
+<script src="equityiq_data.js"></script>
+<script>
+const D = window.EQUITYIQ_DATA;
+const fmt = (n) => n == null ? "—" : "$" + Math.round(n).toLocaleString();
+const pct = (v) => v == null ? "n/a" : (v >= 0 ? "+" : "") + (v * 100).toFixed(1) + "%";
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const STATUSES = ["New", "Shortlisted", "Photos reviewed", "Toured", "Offer", "Rejected"];
+let PIPE = {};
+try { PIPE = JSON.parse(localStorage.getItem("eqiq_pipe") || "{}"); } catch (e) { PIPE = {}; }
+const pipeSave = () => { try { localStorage.setItem("eqiq_pipe", JSON.stringify(PIPE)); } catch (e) {} };
+window.setStatus = (el, url) => {
+  PIPE[url] = PIPE[url] || {};
+  PIPE[url].status = el.value;
+  pipeSave();
+  const card = el.closest(".card");
+  card.dataset.st = el.value;
+  const pill = card.querySelector(".pill.status");
+  if (pill) pill.textContent = el.value;
+  else if (el.value !== "New") {
+    const pl = card.querySelector(".pills");
+    pl.insertAdjacentHTML("afterbegin", `<span class="pill status">${esc(el.value)}</span>`);
+  }
+  const sec = card.closest(".zonesec");
+  if (sec) applyZoneFilter(sec.dataset.zone);
+};
+window.setNotes = (el, url) => { PIPE[url] = PIPE[url] || {}; PIPE[url].notes = el.value; pipeSave(); };
+const ZF = {};
+window.applyZoneFilter = (z) => {
+  const sec = document.querySelector(`.zonesec[data-zone="${z}"]`);
+  const f = ZF[z];
+  if (!sec || !f) return;
+  let shown = 0, total = 0;
+  sec.querySelectorAll(".card").forEach(c => {
+    total++;
+    const st = c.dataset.st || "New";
+    let ok = true;
+    if (f.st === "active") ok = st !== "Rejected";
+    if (f.st === "short") ok = ["Shortlisted", "Photos reviewed", "Toured", "Offer"].includes(st);
+    if (f.st === "rejected") ok = st === "Rejected";
+    if (ok && f.cat !== "all" && (c.dataset.cat || "standard") !== f.cat) ok = false;
+    if (ok && f.ten !== "all" && (c.dataset.ten || "fee-simple") !== f.ten) ok = false;
+    c.style.display = ok ? "" : "none";
+    if (ok) shown++;
+  });
+  const sh = sec.querySelector(".showing");
+  if (sh) sh.textContent = shown === total ? `${total} shown` : `${shown} of ${total} shown`;
+  let em = sec.querySelector(".zempty");
+  if (!em && total) {
+    em = document.createElement("div");
+    em.className = "empty zempty";
+    em.textContent = "Nothing here matches these filters — tap a highlighted button to clear it.";
+    sec.querySelector(".ztools").after(em);
+  }
+  if (em) em.style.display = (total && !shown) ? "" : "none";
+};
+
+if (!D || !D.areas || !D.areas.length) {
+  document.getElementById("areas").innerHTML =
+    "<div class='empty' style='margin-top:18px'>No data yet. Run <b>run_homeharvest.bat</b> first, then reopen this page.</div>";
+} else {
+  document.getElementById("subhead").innerHTML = `${esc(D.filters)} · updated ${esc(D.generated)}`;
+
+  // Alerts
+  const alertsEl = document.getElementById("alerts");
+  if (D.baseline) {
+    alertsEl.innerHTML = `<div class="baseline">First run — baseline saved. From the next run onward,
+      new listings and price cuts will be flagged here (and by email if you've enabled it).</div>`;
+  } else if (D.alerts && D.alerts.length) {
+    alertsEl.innerHTML = `<details class="alertbox"${D.alerts.length <= 4 ? " open" : ""}><summary>Since last run: ${D.alerts.length} change${D.alerts.length > 1 ? "s" : ""}${D.alerts.length > 4 ? " — click to expand" : ""}</summary><ul>` +
+      D.alerts.map(a => `<li><span class="atag ${a.type}">${a.type === "new" ? "New" : a.type === "fee_change" ? "Fee change" : "Price cut"}</span>
+        <b>${esc(a.address)}</b> — ${esc(a.city_state)} · ${esc(a.detail)} · score ${a.score}
+        ${a.url ? ` · <a href="${esc(a.url)}" target="_blank" rel="noopener">listing</a>` : ""}</li>`).join("") +
+      `</ul><div class="alertnote">NEW means new to your filters since the previous run — after you change
+      search settings (like adding condos), everything that newly qualifies appears here once, then settles down.</div></details>`;
+  }
+
+  const nacaMeta = {
+    "likely-compliant": ["pine", "NACA: likely compliant"],
+    "review": ["amber", "NACA: needs review"],
+    "unknown": ["slate", "NACA: inspection will decide"],
+  };
+  const verdictColor = { "Strong": "pine", "Moderate": "amber", "Weak": "rust" };
+
+  const sigList = (items, cls) => items.length
+    ? `<ul class="sig ${cls}">` + items.map(s => `<li><span class="ph">"${esc(s.phrase)}"</span> — ${esc(s.read)}</li>`).join("") + `</ul>`
+    : `<p style="color:var(--slate)">None detected.</p>`;
+
+  document.getElementById("areas").innerHTML = D.areas.map(area => {
+    const cards = area.listings.length ? area.listings.map(l => {
+      const scoreColor = l.score >= 65 ? "pine" : l.score >= 45 ? "amber" : "slate";
+      const scorePill = `<span class="pill ${scoreColor}">Score ${l.score}</span>`;
+      const alertPill = l.alert
+        ? (l.alert.type === "new" ? `<span class="pill solid-pine">NEW</span>`
+           : l.alert.type === "fee_change" ? `<span class="pill rust">FEE CHANGE</span>`
+           : `<span class="pill solid-amber">PRICE CUT</span>`)
+        : "";
+      const spreadPill = l.spread == null ? "" :
+        l.spread > 15000 ? `<span class="pill pine">Under comps by ${fmt(l.spread)}</span>` :
+        l.spread < -15000 ? `<span class="pill rust">Over comps by ${fmt(-l.spread)}</span>` :
+        `<span class="pill slate">Near comp value</span>`;
+      const R = l.reno;
+      const renoPill = `<span class="pill slate">Reno: ${esc(R.tier)}</span>`;
+      const paybackPill = R.verdict && verdictColor[R.verdict]
+        ? `<span class="pill ${verdictColor[R.verdict]}">Payback: ${R.verdict}</span>`
+        : (R.tier === "turnkey" ? `<span class="pill slate">Turnkey</span>` : "");
+      const st = (PIPE[l.url] && PIPE[l.url].status) || "New";
+      const notes = (PIPE[l.url] && PIPE[l.url].notes) || "";
+      const statusPill = st !== "New" ? `<span class="pill status">${esc(st)}</span>` : "";
+      const NP = l.naca_priority || {};
+      const prioPill = NP.priority ? `<span class="pill pine">NACA priority tract</span>` : "";
+      const A = l.appreciation || {};
+      const apprPill = A.label
+        ? `<span class="pill ${A.label === "Rising" ? "pine" : A.label === "Cooling" ? "rust" : "slate"}">Zip ${A.label}${A.basis_pct != null ? " " + pct(A.basis_pct) + "/yr" : ""}</span>`
+        : "";
+      const [nc, nl] = nacaMeta[l.naca.status] || nacaMeta.unknown;
+      const sfhPill = l.tenure === "single-family" ? `<span class="pill slate">Single-family</span>` : "";
+      const tenPill = l.tenure === "condo"
+        ? (l.fha_status === "not-approved"
+            ? `<span class="pill rust">Condo — NOT FHA-approved</span>`
+            : l.fha_status === "approved"
+              ? `<span class="pill pine">Condo — FHA-approved</span>`
+              : `<span class="pill amber">Condo — association review</span>`)
+        : "";
+      const catPill = l.category === "new-construction"
+        ? (l.newcon_stage === "to-be-built"
+            ? `<span class="pill amber">To be built · not finished yet</span>`
+            : `<span class="pill pine">New build · ready now</span>`)
+        : l.category === "distressed"
+          ? (l.naca_viable ? `<span class="pill amber">Distressed · NACA-viable</span>`
+                           : `<span class="pill rust">Distressed · hard to finance</span>`)
+          : "";
+      const auctionPill = l.auction ? `<span class="pill rust">Auction — list price is opening bid</span>` : "";
+      const hhPill = l.househack ? `<span class="pill pine">House-hack potential</span>` : "";
+      const bsmtPill = l.basement ? `<span class="pill slate">Basement</span>` : "";
+      const garPill = l.garage ? `<span class="pill slate">Garage</span>` : "";
+      const motPill = l.signals.motivation.length
+        ? `<span class="pill amber">${l.signals.motivation.length} motivation signal${l.signals.motivation.length > 1 ? "s" : ""}</span>` : "";
+      const baths = (l.baths ?? "?") + (l.half_baths ? "." + Math.round(l.half_baths * 5) : "");
+      const domTxt = l.dom != null ? ` · <b>${Math.round(l.dom)}</b> DOM` : "";
+      const hoaTxt = l.hoa ? ` · HOA <b>$${Math.round(l.hoa)}</b>/mo` : "";
+      const distTxt = l.dist_mi != null
+        ? ` · <b>${l.dist_mi}</b> mi${l.drive_min != null ? ` (~<b>${l.drive_min}</b> min drive)` : ""} to ${esc(l.center_label)}`
+        : "";
+      const payTxt = l.payment ? ` · est. <b>${fmt(l.payment.total)}</b>/mo` : "";
+      const thumb = l.photos && l.photos.length
+        ? `<img class="thumb" loading="lazy" src="${esc(l.photos[0])}" alt="">`
+        : `<div class="thumb"></div>`;
+      const strip = l.photos && l.photos.length > 1
+        ? `<div class="photostrip">` + l.photos.map(p => `<img loading="lazy" src="${esc(p)}" alt="">`).join("") + `</div>` : "";
+      const totalEquity = (R.post_reno_value && R.cost != null) ? R.post_reno_value - (l.price + R.cost) : null;
+      const P = l.payment;
+
+      const catKey = l.category === "new-construction"
+        ? (l.newcon_stage === "to-be-built" ? "to-be-built" : "new-ready")
+        : (l.category || "standard");
+      return `<div class="card" data-st="${esc(st)}" data-cat="${esc(catKey)}" data-ten="${esc(l.tenure || 'fee-simple')}" data-url="${esc(l.url)}" onclick="this.classList.toggle('open')">
+        <div class="cardtop">
+          ${thumb}
+          <div class="cardmain">
+            <div class="row">
+              <div>
+                <div class="addr">${esc(l.address)}</div>
+                <div class="citystate">${esc(l.city_state)} · ${esc(l.status)}</div>
+              </div>
+              <div class="price">${fmt(l.price)}</div>
+            </div>
+            <div class="meta"><b>${l.beds ?? "?"}</b> bd · <b>${baths}</b> ba · <b>${l.sqft ? Math.round(l.sqft).toLocaleString() : "?"}</b> sqft · built <b>${l.year_built ? Math.round(l.year_built) : "?"}</b>${domTxt}${hoaTxt}${distTxt}${payTxt}</div>
+            <div class="pills">${statusPill}${scorePill}${alertPill}${tenPill}${sfhPill}${prioPill}${auctionPill}${hhPill}${catPill}${spreadPill}${paybackPill}${renoPill}${bsmtPill}${garPill}${apprPill}${motPill}<span class="pill ${nc}">${nl}</span></div>
+          </div>
+        </div>
+        <div class="detail">
+          ${strip}
+          <div class="q">Would the comps back this price?</div>
+          <p>Similar townhome solds ${esc(l.comp_pool_label)} run about <b>$${l.market_ppsf_used ?? "—"}/sqft</b>
+          (${l.comp_pool_size} comps), implying <b>${fmt(l.implied_value)}</b> as-is — versus <b>${fmt(l.price)}</b> asking.
+          ${l.spread > 0 ? "That gap is potential built-in equity, pending condition." : l.spread < 0 ? "Asking exceeds what comps support — negotiate or pass." : ""}</p>
+          <div class="q">How much should you spend renovating?</div>
+          <div class="mathbox">
+            Tier: <b>${esc(R.tier)}</b> — ${esc(R.basis)}<br>
+            Estimated cost: <b>${R.cost ? fmt(R.cost) : "$0"}</b>${R.rate ? ` (~$${R.rate}/sqft, rough 2026 DMV rates)` : ""}
+          </div>
+          <div class="q">Would the area pay for it?</div>
+          <div class="mathbox">
+            Renovated townhomes here (top-quartile $/sqft) suggest: <b>${fmt(R.post_reno_value)}</b><br>
+            Value gain over as-is estimate: <b>${fmt(R.gain)}</b><br>
+            ${R.payback != null ? `Payback: <b>$${R.payback.toFixed(2)}</b> back per $1 spent — <b>${esc(R.verdict)}</b><br>` : ""}
+            ${totalEquity != null ? `Potential total equity (post-reno value − price − reno): <b>${fmt(totalEquity)}</b>` : ""}
+          </div>
+          <div class="q">Is the neighborhood appreciating?</div>
+          <div class="mathbox">
+            Zillow home value index, zip ${esc(A.zip || "?")}: 1-yr <b>${pct(A.zhvi_1yr)}</b> · 5-yr total <b>${pct(A.zhvi_5yr)}</b>${A.zhvi_asof ? ` <span style="color:var(--slate)">(as of ${esc(A.zhvi_asof)})</span>` : ""}<br>
+            Cross-check from our own townhome comps in this zip: <b>${A.own_1yr != null ? pct(A.own_1yr) + "/yr" : "not enough sales to compute"}</b>
+            ${R.tier === "turnkey" ? `<br><span style="color:var(--slate)">Turnkey listing — zip appreciation is the entire equity thesis here.</span>` : ""}
+          </div>
+          ${P ? `<div class="q">What would it cost monthly with NACA?</div>
+          <div class="mathbox">
+            Principal &amp; interest at ${(P.rate * 100).toFixed(2)}%: <b>${fmt(P.pi)}</b><br>
+            Property tax (est.): <b>${fmt(P.tax)}</b> · HOA: <b>${fmt(P.hoa)}</b> · Insurance (est.): <b>${fmt(P.ins)}</b><br>
+            Estimated total: <b>${fmt(P.total)}/mo</b> <span style="color:var(--slate)">— no down payment, no PMI under NACA; verify the current NACA rate</span>
+          </div>` : ""}
+          ${NP.tract ? `<div class="q">Is this a NACA priority area?</div>
+          <div class="mathbox">
+            Census tract <b>${esc(NP.tract)}</b> · tract median family income <b>${fmt(NP.tract_mfi)}</b>
+            (${NP.ratio != null ? Math.round(NP.ratio * 100) + "%" : "?"} of the DC-metro median)<br>
+            ${NP.priority ? `<b>Likely NACA priority tract</b> — income limits may not apply to you here.` : `Above the 80% threshold — standard NACA terms (subject to income limits).`}
+            <span style="color:var(--slate)">Confirm with your NACA counselor; this is an estimate from public census data.</span>
+          </div>` : ""}
+          ${l.est_rent ? `<div class="q">If life changes, would it rent?</div>
+          <div class="mathbox">
+            Estimated market rent: <b>${fmt(l.est_rent)}/mo</b> vs your payment ${l.payment ? `<b>${fmt(l.payment.total)}/mo</b> — ${l.est_rent >= l.payment.total ? "rent would likely cover the payment" : `about ${fmt(l.payment.total - l.est_rent)}/mo short of covering it`}` : ""}
+            <span style="color:var(--slate)">(from current townhome rental listings nearby — a fallback check, not investment advice)</span>
+          </div>` : ""}
+          ${l.schools && l.schools.length ? `<div class="q">Nearby schools</div><p>${l.schools.map(esc).join(" · ")}</p>` : ""}
+          <div class="q">What do the listing words tell you?</div>
+          <b style="font-size:12px;color:var(--rust)">Motivation / distress</b>${sigList(l.signals.motivation, "mot")}
+          <b style="font-size:12px;color:var(--amber-t)">Condition</b>${sigList(l.signals.condition, "")}
+          <b style="font-size:12px;color:var(--pine)">Already done</b>${sigList(l.signals.positive, "pos")}
+          <div class="q">Does this meet NACA standards?</div>
+          <p>${esc(l.naca.note)}</p>
+          ${l.tenure === "condo" ? `<div class="q">Condo due diligence — in order</div>
+          <div class="mathbox">
+            1 · Ask the agent: <b>"Is the community FHA-approved — and if not, why not?"</b><br>
+            2 · ${l.fee_context
+                ? `Community fee check (<b>${l.fee_context.n}</b> records this year): $${l.fee_context.min}–$${l.fee_context.max}/mo, median <b>$${l.fee_context.median}</b>${l.fee_context.vs_median != null ? ` — this unit is <b>${l.fee_context.vs_median >= 0 ? "+$" + l.fee_context.vs_median : "−$" + Math.abs(l.fee_context.vs_median)}</b> vs its neighbors${l.fee_context.vs_median > l.fee_context.median * 0.15 ? " — ask why (special assessment? larger unit?)" : ""}` : ""}. Daily runs now watch for fee hikes automatically; ask Claude for multi-year history`
+                : `Ask Claude to reconstruct the community's fee history from past listings`} (steady 2–5%/yr is normal; frozen-then-jump means deferred repairs)<br>
+            3 · Under contract, read the resale package: <b>reserve study vs actual reserves</b> is the real health test — a rising fee alone proves collection, not upkeep<br>
+            4 · Walk the commons: roofs, asphalt and siding are the association's true financial statement<br>
+            <span style="color:var(--muted)">Maryland gives you 7 days after receiving the resale package to cancel penalty-free.</span>
+          </div>` : ""}
+          ${l.text ? `<div class="q">Full listing description</div><div class="desc">${esc(l.text)}</div>` : ""}
+          ${l.url ? `<p style="margin-top:10px"><a href="${esc(l.url)}" target="_blank" rel="noopener">View on Realtor.com →</a></p>` : ""}
+          <div class="pipe" onclick="event.stopPropagation()">
+            <label>Your pipeline</label>
+            <select onchange="setStatus(this, '${esc(l.url)}')">${STATUSES.map(x => `<option${x === st ? " selected" : ""}>${x}</option>`).join("")}</select>
+            <textarea placeholder="Your notes — offer thoughts, tour impressions, questions for the agent..." onchange="setNotes(this, '${esc(l.url)}')">${esc(notes)}</textarea>
+          </div>
+        </div>
+      </div>`;
+    }).join("") : `<div class="empty">No townhomes matched the filters in this zone right now. Inventory changes weekly — the daily run will catch new ones.</div>`;
+
+    const compRows = (area.comps_recent || []).map(c => `<tr>
+      <td>${c.url ? `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.address)}</a>` : esc(c.address)}</td>
+      <td class="n">${fmt(c.sold_price)}</td>
+      <td class="n">${c.sqft ? Math.round(c.sqft).toLocaleString() : "—"}</td>
+      <td class="n">${c.ppsf ? "$" + c.ppsf : "—"}</td>
+      <td class="n">${esc(c.date)}</td>
+    </tr>`).join("");
+
+    const tc = { "fee-simple": 0, "condo": 0, "single-family": 0 };
+    area.listings.forEach(l => { tc[l.tenure || "fee-simple"] = (tc[l.tenure || "fee-simple"] || 0) + 1; });
+    return `<section class="zonesec" data-zone="${esc(area.slug)}"><h2>${esc(area.name)}</h2>
+      <div class="areasub">${area.market.matches} match${area.market.matches === 1 ? "" : "es"}
+      (${tc["fee-simple"]} townhome · ${tc["condo"]} condo · ${tc["single-family"]} single-family) ·
+      ${area.market.townhome_solds} townhome solds in comp pool ·
+      median $${area.market.median_ppsf ? Math.round(area.market.median_ppsf) : "—"}/sqft · sorted by EquityIQ score</div>
+      ${area.listings.length ? `<div class="ztools" data-zone="${esc(area.slug)}">
+        <button class="chip active" data-g="st" data-v="all">All</button>
+        <button class="chip" data-g="st" data-v="active">Hide rejected</button>
+        <button class="chip" data-g="st" data-v="short">Shortlist+</button>
+        <button class="chip" data-g="st" data-v="rejected">Rejected</button>
+        <span class="tdiv"></span>
+        <button class="chip active" data-g="ten" data-v="all">All homes</button>
+        <button class="chip" data-g="ten" data-v="fee-simple">Townhome (${tc["fee-simple"]})</button>
+        <button class="chip" data-g="ten" data-v="condo">Condo (${tc["condo"]})</button>
+        <button class="chip" data-g="ten" data-v="single-family">Single-family (${tc["single-family"]})</button>
+        <span class="tdiv"></span>
+        <button class="chip active" data-g="cat" data-v="all">Any status</button>
+        <button class="chip" data-g="cat" data-v="new-ready">New · ready</button>
+        <button class="chip" data-g="cat" data-v="to-be-built">To be built</button>
+        <button class="chip" data-g="cat" data-v="distressed">Distressed</button>
+        <span class="showing"></span>
+      </div>` : ""}
+      ${cards}
+      ${(area.near_misses && area.near_misses.length) ? `<details class="compsbox"><summary>Near misses — failed exactly one filter (${area.near_misses.length} shown)</summary>
+        <table><thead><tr><th>Address</th><th>Price</th><th>Why it missed</th></tr></thead><tbody>` +
+        area.near_misses.map(n => `<tr><td>${n.url ? `<a href="${esc(n.url)}" target="_blank" rel="noopener">${esc(n.address)}</a>` : esc(n.address)} <span style="color:var(--slate)">${esc(n.city_state)}</span></td><td class="n">${fmt(n.price)}</td><td>${esc(n.reason)}</td></tr>`).join("") +
+        `</tbody></table></details>` : ""}
+      <details class="compsbox"><summary>Recent townhome solds in this zone</summary>
+        <table><thead><tr><th>Address</th><th>Sold</th><th>Sqft</th><th>$/sqft</th><th>Date</th></tr></thead>
+        <tbody>${compRows}</tbody></table>
+      </details></section>`;
+  }).join("");
+
+  // location selector
+  const zoneShort = { jbab: "PG & Charles, MD", vajbab: "NoVA near JBAB", reston: "Reston, VA" };
+  const zb = document.getElementById("zonebar");
+  zb.style.display = "";
+  let ZONE = localStorage.getItem("eqiq_zone") || "all";
+  if (ZONE !== "all" && !D.areas.some(a => a.slug === ZONE)) ZONE = "all";
+  const applyZone = () => {
+    document.querySelectorAll(".zonesec").forEach(sec => {
+      sec.style.display = (ZONE === "all" || sec.dataset.zone === ZONE) ? "" : "none";
+    });
+    zb.querySelectorAll(".chip").forEach(b => b.classList.toggle("active", b.dataset.z === ZONE));
+    try { localStorage.setItem("eqiq_zone", ZONE); } catch (e) {}
+  };
+  zb.innerHTML = `<button class="chip" data-z="all">All locations</button>` +
+    D.areas.map(a => `<button class="chip" data-z="${esc(a.slug)}">${esc(zoneShort[a.slug] || a.name)} (${a.market.matches})</button>`).join("");
+  zb.querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => { ZONE = b.dataset.z; applyZone(); }));
+  applyZone();
+
+  const tb = document.getElementById("toolbar");
+  tb.style.display = "";
+  document.querySelectorAll(".ztools").forEach(zt => {
+    const z = zt.dataset.zone;
+    ZF[z] = { st: "all", cat: "all", ten: "all" };
+    zt.querySelectorAll(".chip").forEach(b => b.addEventListener("click", (e) => {
+      e.stopPropagation();
+      ZF[z][b.dataset.g] = b.dataset.v;
+      zt.querySelectorAll(`.chip[data-g="${b.dataset.g}"]`).forEach(x => x.classList.toggle("active", x === b));
+      applyZoneFilter(z);
+    }));
+    applyZoneFilter(z);
+  });
+  document.getElementById("savepipe").addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify({saved: new Date().toISOString(), pipeline: PIPE}, null, 1)],
+                          {type: "application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "equityiq_pipeline.json";
+    a.click();
+  });
+}
+</script>
+</body>
+</html>
